@@ -23,6 +23,7 @@
 #endif
 
 #include <fstream>
+#include <string_view>
 
 namespace {
 
@@ -69,6 +70,8 @@ ResolveMapCache::KeyType createCacheKey(const std::filesystem::path& rpk) {
 }
 
 #ifndef PLD_TEST_EXPORTS
+constexpr std::string_view ILLEGAL_FS_CHARS = "\\/:*?\"<>|";
+
 std::filesystem::path resolveFromHDA(const std::filesystem::path& p, const std::filesystem::path& unpackPath) {
 	LOG_DBG << "detected embedded resource in HDA: " << p;
 
@@ -77,7 +80,8 @@ std::filesystem::path resolveFromHDA(const std::filesystem::path& p, const std::
 	LOG_DBG << "resource container: " << container;
 
 	auto resName = p.filename().string();
-	std::replace(resName.begin(), resName.end(), '?', '_'); // TODO: generalize
+	std::replace_if(resName.begin(), resName.end(), [](char c) {
+		return (ILLEGAL_FS_CHARS.find(c) != std::string::npos); },'_');
 	std::filesystem::path extractedResource = unpackPath / resName;
 
 	if (fsr.isGood()) {
