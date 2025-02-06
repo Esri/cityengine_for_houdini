@@ -356,4 +356,9 @@ void ensureNonExistingFile(std::filesystem::path& p) {
 	std::replace_if(
 	        stem.begin(), stem.end(), [](char c) { return (ILLEGAL_FS_CHARS.find(c) != std::string::npos); }, '_');
 	p = p.parent_path() / (stem + p.extension().generic_string());
+
+	// ensure we do not produce a collision with existing file
+	for (size_t suf = 0; std::filesystem::exists(p); suf++) {
+		p = p.parent_path() / (stem + '_' + std::to_string(suf) + p.extension().generic_string());
+	}
 }
