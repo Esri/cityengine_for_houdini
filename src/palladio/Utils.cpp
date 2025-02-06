@@ -45,6 +45,8 @@
 
 namespace {
 
+constexpr std::string_view ILLEGAL_FS_CHARS = "\\/:*?\"<>|";
+
 template <typename inC, typename outC, typename FUNC>
 std::basic_string<outC> callAPI(FUNC f, const std::basic_string<inC>& s) {
 	std::vector<outC> buffer(s.size());
@@ -345,4 +347,13 @@ std::wstring getFileExtensionString(const std::vector<std::wstring>& extensions)
 	if (extensionString.empty())
 		return FILE_ANY;
 	return extensionString;
+}
+
+void ensureNonExistingFile(std::filesystem::path& p) {
+	std::string stem = p.stem().generic_string();
+
+	// filter out common illegal characters from the stem
+	std::replace_if(
+	        stem.begin(), stem.end(), [](char c) { return (ILLEGAL_FS_CHARS.find(c) != std::string::npos); }, '_');
+	p = p.parent_path() / (stem + p.extension().generic_string());
 }

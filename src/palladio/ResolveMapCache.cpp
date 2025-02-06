@@ -70,8 +70,6 @@ ResolveMapCache::KeyType createCacheKey(const std::filesystem::path& rpk) {
 }
 
 #ifndef PLD_TEST_EXPORTS
-constexpr std::string_view ILLEGAL_FS_CHARS = "\\/:*?\"<>|";
-
 std::filesystem::path resolveFromHDA(const std::filesystem::path& p, const std::filesystem::path& unpackPath) {
 	LOG_DBG << "detected embedded resource in HDA: " << p;
 
@@ -79,10 +77,8 @@ std::filesystem::path resolveFromHDA(const std::filesystem::path& p, const std::
 	UT_StringHolder container = getFSReaderFilename(fsr);
 	LOG_DBG << "resource container: " << container;
 
-	auto resName = p.filename().string();
-	std::replace_if(resName.begin(), resName.end(), [](char c) {
-		return (ILLEGAL_FS_CHARS.find(c) != std::string::npos); },'_');
-	std::filesystem::path extractedResource = unpackPath / resName;
+	std::filesystem::path extractedResource = unpackPath / p.filename();
+	ensureNonExistingFile(extractedResource);
 
 	if (fsr.isGood()) {
 		std::filesystem::create_directories(unpackPath);
