@@ -46,7 +46,7 @@ import com.esri.zrh.jenkins.psl.UploadTrackingPsl
 	DOCKER_IMAGE_LINUX_CONFIG + [ os: CEPL.CFG_OS_RHEL8, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_GCC112, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '20.0' ],
 	[ os: CEPL.CFG_OS_WIN10, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_VC1437, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '20.0' ],
 	DOCKER_IMAGE_LINUX_CONFIG + [ grp: 'cesdkLatest', os: CEPL.CFG_OS_RHEL8, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_GCC112, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '20.0', cesdk: PAPL.Dependencies.CESDK_LATEST ],
-	[ grp: 'cesdkLatest', os: CEPL.CFG_OS_WIN10, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_VC1437, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '20.0', cesdk: PAPL.Dependencies.CESDK_LATEST ],
+	[ grp: 'cesdkLatest', os: CEPL.CFG_OS_WIN10, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_VC1438, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '20.0', cesdk: PAPL.Dependencies.CESDK_LATEST ],
 ]
 
 

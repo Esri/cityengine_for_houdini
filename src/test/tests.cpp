@@ -241,6 +241,58 @@ TEST_CASE("create file extension string", "[utils]") {
 	}
 }
 
+TEST_CASE("legalize file stem and ensure it does not exist") {
+	auto const base = std::filesystem::temp_directory_path() / std::tmpnam(nullptr);
+	REQUIRE(!std::filesystem::exists(base));
+	std::filesystem::create_directories(base);
+
+	SECTION("default case") {
+		std::filesystem::path p = base / "foo.bar";
+		ensureNonExistingFile(p);
+		CHECK(p == base / "foo.bar");
+	}
+
+	SECTION("default case without extension") {
+		std::filesystem::path p = base / "foo";
+		ensureNonExistingFile(p);
+		CHECK(p == base / "foo");
+	}
+
+	SECTION("existing file") {
+		std::filesystem::path p = base / "foo.bar";
+		std::ofstream out(p);
+		REQUIRE(std::filesystem::exists(p));
+		ensureNonExistingFile(p);
+		CHECK(p == base / "foo_0.bar");
+	}
+
+	SECTION("existing file without extension") {
+		std::filesystem::path p = base / "foo";
+		std::ofstream out(p);
+		REQUIRE(std::filesystem::exists(p));
+		ensureNonExistingFile(p);
+		CHECK(p == base / "foo_0");
+	}
+
+	SECTION("existing file with suffix") {
+		std::filesystem::path p = base / "foo_0.bar";
+		std::ofstream out(p);
+		REQUIRE(std::filesystem::exists(p));
+		ensureNonExistingFile(p);
+		CHECK(p == base / "foo_0_0.bar");
+	}
+
+	SECTION("existing directory of same name") {
+		std::filesystem::path p = base / "foo.bar";
+		std::filesystem::create_directories(p);
+		REQUIRE(std::filesystem::exists(p));
+		ensureNonExistingFile(p);
+		CHECK(p == base / "foo_0.bar");
+	}
+
+	std::filesystem::remove_all(base);
+}
+
 // -- encoder test cases
 
 TEST_CASE("serialize basic mesh") {
