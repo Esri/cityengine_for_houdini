@@ -188,12 +188,12 @@ void ShapeConverter::get(const GU_Detail* detail, const PrimitiveClassifier& pri
 	coords.reserve(detail->getNumPoints() * 3);
 	GA_Offset ptoff;
 	GA_FOR_ALL_PTOFF(detail, ptoff) {
-		const UT_Vector3 p = detail->getPos3(ptoff);
+		const UT_Vector3D p = detail->getPos3D(ptoff);
 		if (DBG)
 			LOG_DBG << "coords " << coords.size() / 3 << ": " << p.x() << ", " << p.y() << ", " << p.z();
-		coords.push_back(static_cast<double>(p.x()));
-		coords.push_back(static_cast<double>(p.y()));
-		coords.push_back(static_cast<double>(p.z()));
+		coords.push_back(p.x());
+		coords.push_back(p.y());
+		coords.push_back(p.z());
 	}
 
 	// scan for uv attributes
