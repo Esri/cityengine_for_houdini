@@ -51,9 +51,9 @@ void setHandleRange(const GA_IndexMap& indexMap, GA_RWHandleI& handle, GA_Offset
 		        << " = " << value;
 }
 
-void setHandleRange(const GA_IndexMap& indexMap, GA_RWHandleF& handle, GA_Offset start, GA_Size size, int component,
+void setHandleRange(const GA_IndexMap& indexMap, GA_RWHandleD& handle, GA_Offset start, GA_Size size, int component,
                     const double& value) {
-	const auto hv = static_cast<fpreal32>(value);
+	const auto hv = value;
 	handle.setBlock(start, size, &hv, 0, component); // using stride = 0 to always set the same value
 	if (DBG)
 		LOG_DBG << "float attr: component = " << component << ", range = [" << start << ", " << start + size
@@ -348,7 +348,8 @@ void ToHoudini::createAttributeHandles(bool useArrayTypes) {
 						handle = h;
 				}
 				else {
-					GA_RWHandleF h(mDetail->addFloatTuple(GA_ATTRIB_PRIMITIVE, utKey, hm.second.cardinality));
+					GA_RWHandleD h(mDetail->addFloatTuple(GA_ATTRIB_PRIMITIVE, utKey, hm.second.cardinality,
+						                                  GA_Defaults(0), nullptr, nullptr, GA_STORE_REAL64));
 					if (h.isValid())
 						handle = h;
 				}
@@ -457,7 +458,7 @@ void ToHoudini::HandleVisitor::operator()(GA_RWHandleC& handle) const {
 	}
 }
 
-void ToHoudini::HandleVisitor::operator()(GA_RWHandleF& handle) const {
+void ToHoudini::HandleVisitor::operator()(GA_RWHandleD& handle) const {
 	if (protoHandle.type == prt::Attributable::PT_FLOAT) {
 		const auto v = attrMap->getFloat(protoHandle.key.c_str());
 		setHandleRange(primIndexMap, handle, rangeStart, rangeSize, 0, v);
