@@ -86,7 +86,7 @@ void convertPolygon(ConversionHelper& ch, const P& p, const std::vector<GA_ROHan
 
 	for (GA_Size i = vtxCnt - 1; i >= 0; i--) {
 		ch.indices.push_back(static_cast<uint32_t>(p.getPointIndex(i)));
-		if (DBG)
+		if constexpr (DBG)
 			LOG_DBG << "      vtx " << i << ": point idx = " << p.getPointIndex(i);
 	}
 
@@ -103,7 +103,7 @@ void convertPolygon(ConversionHelper& ch, const P& p, const std::vector<GA_ROHan
 			uvSet.uvs.push_back(v.x());
 			uvSet.uvs.push_back(v.y());
 			uvSet.idx.push_back(uvSet.idx.size());
-			if (DBG)
+			if constexpr (DBG)
 				LOG_DBG << "     uv " << i << ": " << v.x() << ", " << v.y();
 		}
 	}
@@ -189,7 +189,7 @@ void ShapeConverter::get(const GU_Detail* detail, const PrimitiveClassifier& pri
 	GA_Offset ptoff;
 	GA_FOR_ALL_PTOFF(detail, ptoff) {
 		const UT_Vector3 p = detail->getPos3(ptoff);
-		if (DBG)
+		if constexpr (DBG)
 			LOG_DBG << "coords " << coords.size() / 3 << ": " << p.x() << ", " << p.y() << ", " << p.z();
 		coords.push_back(static_cast<double>(p.x()));
 		coords.push_back(static_cast<double>(p.y()));
@@ -207,14 +207,14 @@ void ShapeConverter::get(const GU_Detail* detail, const PrimitiveClassifier& pri
 	// -- loop over all primitive partitions and create shape builders
 	uint32_t isIdx = 0;
 	for (auto pIt = partitions.cbegin(); pIt != partitions.cend(); ++pIt, ++isIdx) {
-		if (DBG)
+		if constexpr (DBG)
 			LOG_DBG << "   -- creating initial shape " << isIdx << ", prim count = " << pIt->second.size();
 
 		ConversionHelper ch(coords, uvHandles);
 
 		// merge primitive geometry inside partition (potential multi-polygon initial shape)
 		for (const auto& prim : pIt->second) {
-			if (DBG)
+			if constexpr (DBG)
 				LOG_DBG << "   -- prim index " << prim->getMapIndex() << ", type: " << prim->getTypeName()
 				        << ", id = " << prim->getTypeId().get();
 			const auto& primType = prim->getTypeId();
@@ -229,7 +229,7 @@ void ShapeConverter::get(const GU_Detail* detail, const PrimitiveClassifier& pri
 					}
 					break;
 				default:
-					if (DBG)
+					if constexpr (DBG)
 						LOG_DBG << "      ignoring primitive of type " << prim->getTypeName();
 					break;
 			}

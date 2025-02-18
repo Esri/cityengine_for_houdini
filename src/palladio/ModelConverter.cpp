@@ -29,16 +29,13 @@ namespace {
 
 constexpr bool DBG = false;
 
-using UTVector3FVector = std::vector<UT_Vector3F>;
+using UTVector3DVector = std::vector<UT_Vector3D>;
 
-UTVector3FVector convertVertices(const double* vtx, size_t vtxSize) {
-	UTVector3FVector utPoints;
+UTVector3DVector convertVertices(const double* vtx, size_t vtxSize) {
+	UTVector3DVector utPoints;
 	utPoints.reserve(vtxSize / 3);
 	for (size_t pi = 0; pi < vtxSize; pi += 3) {
-		const auto x = static_cast<fpreal32>(vtx[pi + 0]);
-		const auto y = static_cast<fpreal32>(vtx[pi + 1]);
-		const auto z = static_cast<fpreal32>(vtx[pi + 2]);
-		utPoints.emplace_back(x, y, z);
+		utPoints.emplace_back(vtx[pi], vtx[pi + 1], vtx[pi + 2]);
 	}
 	return utPoints;
 }
@@ -72,15 +69,28 @@ GA_Offset createPrimitives(GU_Detail* mDetail, PrimitiveGroups& holeGroups, Grou
 
 	// -- create primitives
 	const GA_Detail::OffsetMarker marker(*mDetail);
-	const UTVector3FVector utPoints = convertVertices(vtx, vtxSize);
+	const UTVector3DVector utPoints = convertVertices(vtx, vtxSize);
 	const GEO_PolyCounts geoPolyCounts = [&counts, &countsSize]() {
 		GEO_PolyCounts pc;
 		for (size_t ci = 0; ci < countsSize; ci++)
 			pc.append(counts[ci]);
 		return pc;
 	}();
-	const GA_Offset primStartOffset = GU_PrimPoly::buildBlock(mDetail, utPoints.data(), utPoints.size(), geoPolyCounts,
-	                                                          reinterpret_cast<const int*>(vertexIndices));
+
+	// allocate points with double precision
+	GA_Offset pointStartOffset = mDetail->appendPointBlock(utPoints.size());
+	for (size_t pi = 0; pi < utPoints.size(); pi++) {
+		mDetail->setPos3(pointStartOffset + pi, utPoints[pi]);
+	}
+
+	// compute point index offsets for buildBlock
+	std::vector<int> polyPointNumbers(vertexIndicesSize);
+	for (size_t vi = 0; vi < vertexIndicesSize; vi++) {
+		polyPointNumbers[vi] = mDetail->pointOffset(vertexIndices[vi]);
+	}
+
+	const GA_Offset primStartOffset =
+	        GU_PrimPoly::buildBlock(mDetail, pointStartOffset, utPoints.size(), geoPolyCounts, polyPointNumbers.data());
 
 	// -- add vertex normals
 	if (nrmSize > 0) {
@@ -93,7 +103,7 @@ GA_Offset createPrimitives(GU_Detail* mDetail, PrimitiveGroups& holeGroups, Grou
 		size_t const psUVSSize = uvsSizes[uvSet];
 		size_t const psUVCountsSize = uvCountsSizes[uvSet];
 		size_t const psUVIndicesSize = uvIndicesSizes[uvSet];
-		if (DBG)
+		if constexpr (DBG)
 			LOG_DBG << "-- uvset " << uvSet << ": psUVCountsSize = " << psUVCountsSize
 			        << ", psUVIndicesSize = " << psUVIndicesSize;
 
@@ -114,13 +124,13 @@ GA_Offset createPrimitives(GU_Detail* mDetail, PrimitiveGroups& holeGroups, Grou
 			size_t uvi = 0;
 			for (GA_Iterator pit(marker.primitiveRange()); !pit.atEnd(); ++pit, ++fi) {
 				GA_Primitive* prim = mDetail->getPrimitive(pit.getOffset());
-				if (DBG)
+				if constexpr (DBG)
 					LOG_DBG << "   fi = " << fi << ": prim vtx cnt = " << prim->getVertexCount()
 					        << ", vtx cnt = " << counts[fi] << ", uv cnt = " << psUVCounts[fi];
 
 				if (psUVCounts[fi] > 0) {
 					for (GA_Iterator vit(prim->getVertexRange()); !vit.atEnd(); ++vit, ++uvi) {
-						if (DBG)
+						if constexpr (DBG)
 							LOG_DBG << "      vi = " << *vit << ": uvi = " << uvi;
 						assert(uvi < psUVIndicesSize);
 						const uint32_t uvIdx = psUVIndices[uvi];
@@ -200,7 +210,7 @@ void ModelConverter::add(const wchar_t* name, const double* vtx, size_t vtxSize,
 	        normalIndicesSize, uvs, uvsSizes, uvCounts, uvCountsSizes, uvIndices, uvIndicesSizes, uvSets);
 
 	// -- convert materials/reports into primitive attributes based on face ranges
-	if (DBG)
+	if constexpr (DBG)
 		LOG_DBG << "got " << faceRangesSize - 1 << " face ranges";
 	if (faceRangesSize > 1) {
 		WA("add materials/reports");
@@ -279,21 +289,21 @@ AttributeMapBuilderUPtr& getBuilder(std::map<int32_t, AttributeMapBuilderUPtr>& 
 } // namespace
 
 prt::Status ModelConverter::attrBool(size_t isIndex, int32_t shapeID, const wchar_t* key, bool value) {
-	if (DBG)
+	if constexpr (DBG)
 		LOG_DBG << "attrBool: shapeID :" << shapeID << ", key: " << key << ", val: " << value;
 	getBuilder(mShapeAttributeBuilders, shapeID)->setBool(key, value);
 	return prt::STATUS_OK;
 }
 
 prt::Status ModelConverter::attrFloat(size_t isIndex, int32_t shapeID, const wchar_t* key, double value) {
-	if (DBG)
+	if constexpr (DBG)
 		LOG_DBG << "attrFloat: shapeID :" << shapeID << ", key: " << key << ", val: " << value;
 	getBuilder(mShapeAttributeBuilders, shapeID)->setFloat(key, value);
 	return prt::STATUS_OK;
 }
 
 prt::Status ModelConverter::attrString(size_t isIndex, int32_t shapeID, const wchar_t* key, const wchar_t* value) {
-	if (DBG)
+	if constexpr (DBG)
 		LOG_DBG << "attrString: shapeID :" << shapeID << ", key: " << key << ", val: " << value;
 	getBuilder(mShapeAttributeBuilders, shapeID)->setString(key, value);
 	return prt::STATUS_OK;
@@ -303,7 +313,7 @@ prt::Status ModelConverter::attrString(size_t isIndex, int32_t shapeID, const wc
 
 prt::Status ModelConverter::attrBoolArray(size_t isIndex, int32_t shapeID, const wchar_t* key, const bool* ptr,
                                           size_t size, size_t nRows) {
-	if (DBG)
+	if constexpr (DBG)
 		LOG_DBG << "attrBoolArray: shapeID :" << shapeID << ", key: " << key << ", val: " << ptr << ", size: " << size;
 	getBuilder(mShapeAttributeBuilders, shapeID)->setBoolArray(key, ptr, size);
 	return prt::STATUS_OK;
@@ -311,7 +321,7 @@ prt::Status ModelConverter::attrBoolArray(size_t isIndex, int32_t shapeID, const
 
 prt::Status ModelConverter::attrFloatArray(size_t isIndex, int32_t shapeID, const wchar_t* key, const double* ptr,
                                            size_t size, size_t nRows) {
-	if (DBG)
+	if constexpr (DBG)
 		LOG_DBG << "attrFloatArray: shapeID :" << shapeID << ", key: " << key << ", val: " << ptr << ", size: " << size;
 	getBuilder(mShapeAttributeBuilders, shapeID)->setFloatArray(key, ptr, size);
 	return prt::STATUS_OK;
@@ -319,7 +329,7 @@ prt::Status ModelConverter::attrFloatArray(size_t isIndex, int32_t shapeID, cons
 
 prt::Status ModelConverter::attrStringArray(size_t isIndex, int32_t shapeID, const wchar_t* key,
                                             const wchar_t* const* ptr, size_t size, size_t nRows) {
-	if (DBG)
+	if constexpr (DBG)
 		LOG_DBG << "attrStringArray: shapeID :" << shapeID << ", key: " << key << ", val: " << ptr
 		        << ", size: " << size;
 	getBuilder(mShapeAttributeBuilders, shapeID)->setStringArray(key, ptr, size);

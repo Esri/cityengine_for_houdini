@@ -90,7 +90,7 @@ void ShapeGenerator::get(const GU_Detail* detail, const PrimitiveClassifier& pri
 		const auto& firstPrimitive = pv.front();
 		const auto& primitiveMapOffset = firstPrimitive->getMapOffset();
 
-		if (DBG)
+		if constexpr (DBG)
 			LOG_DBG << "   -- creating initial shape " << isIdx << ", prim count = " << pv.size();
 
 		// extract main attrs from first prim in initial shape prim group
@@ -131,7 +131,7 @@ void ShapeGenerator::get(const GU_Detail* detail, const PrimitiveClassifier& pri
 		prt::Status status = prt::STATUS_UNSPECIFIED_ERROR;
 		const prt::InitialShape* initialShape = isb->createInitialShapeAndReset(&status);
 		if (status == prt::STATUS_OK && initialShape != nullptr) {
-			if (DBG)
+			if constexpr (DBG)
 				LOG_DBG << objectToXML(initialShape);
 			shapeData.addShape(initialShape, std::move(amb), std::move(ruleAttr));
 		}
