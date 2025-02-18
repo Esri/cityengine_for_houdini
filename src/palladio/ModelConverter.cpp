@@ -29,16 +29,13 @@ namespace {
 
 constexpr bool DBG = false;
 
-using UTVector3FVector = std::vector<UT_Vector3F>;
+using UTVector3DVector = std::vector<UT_Vector3D>;
 
-UTVector3FVector convertVertices(const double* vtx, size_t vtxSize) {
-	UTVector3FVector utPoints;
+UTVector3DVector convertVertices(const double* vtx, size_t vtxSize) {
+	UTVector3DVector utPoints;
 	utPoints.reserve(vtxSize / 3);
 	for (size_t pi = 0; pi < vtxSize; pi += 3) {
-		const auto x = static_cast<fpreal32>(vtx[pi + 0]);
-		const auto y = static_cast<fpreal32>(vtx[pi + 1]);
-		const auto z = static_cast<fpreal32>(vtx[pi + 2]);
-		utPoints.emplace_back(x, y, z);
+		utPoints.emplace_back(vtx[pi], vtx[pi + 1], vtx[pi + 2]);
 	}
 	return utPoints;
 }
@@ -72,15 +69,28 @@ GA_Offset createPrimitives(GU_Detail* mDetail, PrimitiveGroups& holeGroups, Grou
 
 	// -- create primitives
 	const GA_Detail::OffsetMarker marker(*mDetail);
-	const UTVector3FVector utPoints = convertVertices(vtx, vtxSize);
+	const UTVector3DVector utPoints = convertVertices(vtx, vtxSize);
 	const GEO_PolyCounts geoPolyCounts = [&counts, &countsSize]() {
 		GEO_PolyCounts pc;
 		for (size_t ci = 0; ci < countsSize; ci++)
 			pc.append(counts[ci]);
 		return pc;
 	}();
-	const GA_Offset primStartOffset = GU_PrimPoly::buildBlock(mDetail, utPoints.data(), utPoints.size(), geoPolyCounts,
-	                                                          reinterpret_cast<const int*>(vertexIndices));
+
+	// allocate points with double precision
+	GA_Offset pointStartOffset = mDetail->appendPointBlock(utPoints.size());
+	for (size_t pi = 0; pi < utPoints.size(); pi++) {
+		mDetail->setPos3(pointStartOffset + pi, utPoints[pi]);
+	}
+
+	// compute point index offsets for buildBlock
+	std::vector<int> polyPointNumbers(vertexIndicesSize);
+	for (size_t vi = 0; vi < vertexIndicesSize; vi++) {
+		polyPointNumbers[vi] = mDetail->pointOffset(vertexIndices[vi]);
+	}
+
+	const GA_Offset primStartOffset =
+	        GU_PrimPoly::buildBlock(mDetail, pointStartOffset, utPoints.size(), geoPolyCounts, polyPointNumbers.data());
 
 	// -- add vertex normals
 	if (nrmSize > 0) {
