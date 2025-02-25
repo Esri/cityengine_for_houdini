@@ -267,7 +267,7 @@ It can be useful to put RPKs into an `rpk` sub-directory of your current Houdini
 ### Required Toolchain & Compiler
 
 - [cmake 3.13 or later](https://cmake.org/download)
-- [conan 1.20 or later](https://www.conan.io/downloads)
+- [conan >=1.20, <2.0](https://www.conan.io/downloads)
 - Linux: GCC 11.2 or later
 - Windows: Visual Studio 2022 (MSVC 14.37) or later
 
