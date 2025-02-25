@@ -194,7 +194,7 @@ PRTContext::~PRTContext() {
 	LOG_INF << "Released PRT cache";
 
 	mPRTHandle.reset(); // same here
-	LOG_INF << "Shutdown PRT & returned license";
+	LOG_INF << "Shutdown PRT";
 
 	prt::removeLogHandler(mLogHandler.get());
 }
