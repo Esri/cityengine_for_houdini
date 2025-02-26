@@ -80,7 +80,7 @@ public:
 
 private:
 	using NoHandle = int8_t;
-	using HandleType = std::variant<NoHandle, GA_RWBatchHandleS, GA_RWHandleI, GA_RWHandleC, GA_RWHandleF,
+	using HandleType = std::variant<NoHandle, GA_RWBatchHandleS, GA_RWHandleI, GA_RWHandleC, GA_RWHandleD,
 	                                GA_RWHandleSA, GA_RWHandleIA, GA_RWHandleDA>;
 
 	struct ProtoHandle {
@@ -99,7 +99,7 @@ private:
 		void operator()(GA_RWBatchHandleS& handle) const;
 		void operator()(GA_RWHandleI& handle) const;
 		void operator()(GA_RWHandleC& handle) const;
-		void operator()(GA_RWHandleF& handle) const;
+		void operator()(GA_RWHandleD& handle) const;
 		void operator()(GA_RWHandleDA& handle) const;
 		void operator()(GA_RWHandleIA& handle) const;
 		void operator()(GA_RWHandleSA& handle) const;
