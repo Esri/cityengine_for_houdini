@@ -313,6 +313,12 @@ void ToHoudini::extractAttributeNames(const prt::AttributeMap* attrMap) {
 	}
 }
 
+namespace {
+
+const GA_Defaults GA_DEFAULT(0);
+
+} // namespace
+
 void ToHoudini::createAttributeHandles(bool useArrayTypes) {
 	WA("all");
 
@@ -332,8 +338,8 @@ void ToHoudini::createAttributeHandles(bool useArrayTypes) {
 						handle = h;
 				}
 				else {
-					GA_RWHandleC h(mDetail->addIntTuple(GA_ATTRIB_PRIMITIVE, utKey, hm.second.cardinality,
-					                                    GA_Defaults(0), nullptr, nullptr, GA_STORE_INT8));
+					GA_RWHandleC h(mDetail->addIntTuple(GA_ATTRIB_PRIMITIVE, utKey, hm.second.cardinality, GA_DEFAULT,
+					                                    nullptr, nullptr, GA_STORE_INT8));
 					if (h.isValid())
 						handle = h;
 				}
@@ -348,8 +354,8 @@ void ToHoudini::createAttributeHandles(bool useArrayTypes) {
 						handle = h;
 				}
 				else {
-					GA_RWHandleD h(mDetail->addFloatTuple(GA_ATTRIB_PRIMITIVE, utKey, hm.second.cardinality,
-						                                  GA_Defaults(0), nullptr, nullptr, GA_STORE_REAL64));
+					GA_RWHandleD h(mDetail->addFloatTuple(GA_ATTRIB_PRIMITIVE, utKey, hm.second.cardinality, GA_DEFAULT,
+					                                      nullptr, nullptr, GA_STORE_REAL64));
 					if (h.isValid())
 						handle = h;
 				}
