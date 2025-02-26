@@ -38,7 +38,7 @@ void setHandleRange(const GA_IndexMap& indexMap, GA_RWHandleC& handle, GA_Offset
 	constexpr int8_t valTrue = 1;
 	const int8_t hv = value ? valTrue : valFalse;
 	handle.setBlock(start, size, &hv, 0, component);
-	if (DBG)
+	if constexpr (DBG)
 		LOG_DBG << "bool attr: range = [" << start << ", " << start + size << "): " << handle.getAttribute()->getName()
 		        << " = " << value;
 }
@@ -46,7 +46,7 @@ void setHandleRange(const GA_IndexMap& indexMap, GA_RWHandleC& handle, GA_Offset
 void setHandleRange(const GA_IndexMap& indexMap, GA_RWHandleI& handle, GA_Offset start, GA_Size size, int component,
                     const int32_t& value) {
 	handle.setBlock(start, size, &value, 0, component);
-	if (DBG)
+	if constexpr (DBG)
 		LOG_DBG << "int attr: range = [" << start << ", " << start + size << "): " << handle.getAttribute()->getName()
 		        << " = " << value;
 }
@@ -55,7 +55,7 @@ void setHandleRange(const GA_IndexMap& indexMap, GA_RWHandleD& handle, GA_Offset
                     const double& value) {
 	const auto hv = value;
 	handle.setBlock(start, size, &hv, 0, component); // using stride = 0 to always set the same value
-	if (DBG)
+	if constexpr (DBG)
 		LOG_DBG << "float attr: component = " << component << ", range = [" << start << ", " << start + size
 		        << "): " << handle.getAttribute()->getName() << " = " << value;
 }
@@ -75,7 +75,7 @@ void setHandleRange(const GA_IndexMap& indexMap, GA_RWBatchHandleS& handle, GA_O
 	const GA_Range range(indexMap, start, start + size);
 	handle.set(range, component, attrValue);
 
-	if (DBG)
+	if constexpr (DBG)
 		LOG_DBG << "string attr: range = [" << start << ", " << start + size
 		        << "): " << handle.getAttribute()->getName() << " = " << attrValue;
 }
@@ -86,7 +86,7 @@ void setHandleRange(const GA_IndexMap& indexMap, GA_RWHandleDA& handle, GA_Offse
 	hv.append(ptr, ptrSize);
 	for (GA_Offset off = start; off < start + size; off++)
 		handle.set(off, hv);
-	if (DBG)
+	if constexpr (DBG)
 		LOG_DBG << "float array attr: range = [" << start << ", " << start + size
 		        << "): " << handle.getAttribute()->getName() << " = " << hv;
 }
@@ -97,7 +97,7 @@ void setHandleRange(const GA_IndexMap& indexMap, GA_RWHandleIA& handle, GA_Offse
 	hv.append(ptr, ptrSize);
 	for (GA_Offset off = start; off < start + size; off++)
 		handle.set(off, hv);
-	if (DBG)
+	if constexpr (DBG)
 		LOG_DBG << "int array attr: range = [" << start << ", " << start + size
 		        << "): " << handle.getAttribute()->getName() << " = " << hv;
 }
@@ -109,7 +109,7 @@ void setHandleRange(const GA_IndexMap& indexMap, GA_RWHandleIA& handle, GA_Offse
 		hv[i] = ptr[i] ? 1u : 0u;
 	for (GA_Offset off = start; off < start + size; off++)
 		handle.set(off, hv);
-	if (DBG)
+	if constexpr (DBG)
 		LOG_DBG << "bool array attr: range = [" << start << ", " << start + size
 		        << "): " << handle.getAttribute()->getName() << " = " << hv;
 }
@@ -121,7 +121,7 @@ void setHandleRange(const GA_IndexMap& indexMap, GA_RWHandleSA& handle, GA_Offse
 		hv[i] = UT_StringHolder(toOSNarrowFromUTF16(ptr[i]));
 	for (GA_Offset off = start; off < start + size; off++)
 		handle.set(off, hv);
-	if (DBG)
+	if constexpr (DBG)
 		LOG_DBG << "string array attr: range = [" << start << ", " << start + size
 		        << "): " << handle.getAttribute()->getName() << " = " << hv;
 }
@@ -176,7 +176,7 @@ bool FromHoudini::handleScalar(const GA_ROAttributeRef& ar, const GA_Offset& off
 			GA_ROHandleD av(ar);
 			if (av.isValid()) {
 				double v = av.get(offset);
-				if (DBG)
+				if constexpr (DBG)
 					LOG_DBG << "   prim float attr: " << ar->getName() << " = " << v;
 				mBuilder.setFloat(name.c_str(), v);
 			}
@@ -187,7 +187,7 @@ bool FromHoudini::handleScalar(const GA_ROAttributeRef& ar, const GA_Offset& off
 			if (av.isValid()) {
 				const char* v = av.get(offset);
 				const std::wstring wv = toUTF16FromOSNarrow(v);
-				if (DBG)
+				if constexpr (DBG)
 					LOG_DBG << "   prim string attr: " << ar->getName() << " = " << v;
 				mBuilder.setString(name.c_str(), wv.c_str());
 			}
@@ -199,7 +199,7 @@ bool FromHoudini::handleScalar(const GA_ROAttributeRef& ar, const GA_Offset& off
 				if (av.isValid()) {
 					const int v = av.get(offset);
 					const bool bv = (v > 0);
-					if (DBG)
+					if constexpr (DBG)
 						LOG_DBG << "   prim bool attr: " << ar->getName() << " = " << bv;
 					mBuilder.setBool(name.c_str(), bv);
 				}
@@ -208,7 +208,7 @@ bool FromHoudini::handleScalar(const GA_ROAttributeRef& ar, const GA_Offset& off
 				GA_ROHandleI av(ar);
 				if (av.isValid()) {
 					const int v = av.get(offset);
-					if (DBG)
+					if constexpr (DBG)
 						LOG_DBG << "   prim int attr: " << ar->getName() << " = " << v;
 					mBuilder.setInt(name.c_str(), v);
 				}
@@ -232,7 +232,7 @@ bool FromHoudini::handleArray(const GA_ROAttributeRef& ar, const GA_Offset& offs
 			if (av.isValid()) {
 				UT_Fpreal64Array v;
 				av.get(offset, v);
-				if (DBG)
+				if constexpr (DBG)
 					LOG_DBG << "   prim float array attr: " << ar->getName() << " = " << v;
 				mBuilder.setFloatArray(name.c_str(), v.data(), v.size());
 			}
@@ -243,7 +243,7 @@ bool FromHoudini::handleArray(const GA_ROAttributeRef& ar, const GA_Offset& offs
 			if (av.isValid()) {
 				UT_StringArray v;
 				av.get(offset, v);
-				if (DBG)
+				if constexpr (DBG)
 					LOG_DBG << "   prim string array attr: " << ar->getName() << " = " << v;
 
 				std::vector<std::wstring> wstrings(v.size());
@@ -262,7 +262,7 @@ bool FromHoudini::handleArray(const GA_ROAttributeRef& ar, const GA_Offset& offs
 				if (av.isValid()) {
 					UT_Int32Array v; // there is no U_Int8Array
 					av.get(offset, v);
-					if (DBG)
+					if constexpr (DBG)
 						LOG_DBG << "   prim bool array attr: " << ar->getName() << " = " << v;
 					const std::unique_ptr<bool[]> vPtrs(new bool[v.size()]);
 					for (size_t i = 0; i < v.size(); i++)
@@ -275,7 +275,7 @@ bool FromHoudini::handleArray(const GA_ROAttributeRef& ar, const GA_Offset& offs
 				if (av.isValid()) {
 					UT_Int32Array v;
 					av.get(offset, v);
-					if (DBG)
+					if constexpr (DBG)
 						LOG_DBG << "   prim int array attr: " << ar->getName() << " = " << v;
 					mBuilder.setIntArray(name.c_str(), v.data(), v.size());
 				}
@@ -386,17 +386,17 @@ void ToHoudini::createAttributeHandles(bool useArrayTypes) {
 				break;
 			}
 			default:
-				if (DBG)
+				if constexpr (DBG)
 					LOG_DBG << "ignored: " << utKey;
 				break;
 		}
 
 		if (handle.index() != 0) {
 			hm.second.handleType = handle;
-			if (DBG)
+			if constexpr (DBG)
 				LOG_DBG << "added attr handle " << utKey;
 		}
-		else if (DBG)
+		else if constexpr (DBG)
 			LOG_DBG << "could not update handle for primitive attribute " << utKey;
 	}
 }
@@ -415,7 +415,7 @@ void ToHoudini::addProtoHandle(HandleMap& handleMap, const std::wstring& handleN
 	WA("all");
 
 	const UT_StringHolder& utName = NameConversion::toPrimAttr(handleName);
-	if (DBG)
+	if constexpr (DBG)
 		LOG_DBG << "handle name conversion: handleName = " << handleName << ", utName = " << utName;
 	handleMap.emplace(utName, std::move(ph));
 }

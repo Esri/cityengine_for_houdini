@@ -688,7 +688,7 @@ bool evaluateDefaultRuleAttributes(SOPAssign* node, const GU_Detail* detail, Sha
 		ruleFileInfos[isIdx] = getRuleFileInfoFromShapeData(detail, shapeData, isIdx, shapeConverter, prtCtx, errors);
 
 		const std::wstring shapeName = L"shape_" + std::to_wstring(isIdx);
-		if (DBG)
+		if constexpr (DBG)
 			LOG_DBG << "evaluating attrs for shape: " << shapeName;
 
 		// persist rule attributes even if empty (need to live until prt::generate is done)
