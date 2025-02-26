@@ -188,7 +188,13 @@ void ShapeConverter::get(const GU_Detail* detail, const PrimitiveClassifier& pri
 	coords.reserve(detail->getNumPoints() * 3);
 	GA_Offset ptoff;
 	GA_FOR_ALL_PTOFF(detail, ptoff) {
+
+#if (HOUDINI_VERSION_MAJOR < 19 || (HOUDINI_VERSION_MAJOR == 19 && HOUDINI_VERSION_MINOR == 0))
+		const UT_Vector3D p = detail->getPos3(ptoff);
+#else
 		const UT_Vector3D p = detail->getPos3D(ptoff);
+#endif
+
 		if constexpr (DBG)
 			LOG_DBG << "coords " << coords.size() / 3 << ": " << p.x() << ", " << p.y() << ", " << p.z();
 		coords.push_back(p.x());
@@ -266,7 +272,7 @@ void ShapeConverter::put(GU_Detail* detail, PrimitiveClassifier& primCls, const 
 				mah.seed.set(off, randomSeed);
 			}
 		} // for all primitives in initial shape
-	}     // for all initial shapes
+	} // for all initial shapes
 }
 
 void ShapeConverter::getMainAttributes(SOP_Node* node, const OP_Context& context) {
