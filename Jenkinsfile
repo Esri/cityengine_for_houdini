@@ -25,7 +25,7 @@ import com.esri.zrh.jenkins.psl.UploadTrackingPsl
 @Field final String SOURCE_STASH = 'palladio-src'
 
 @Field final List CONFIGS_CHECKOUT = [ [ ba: PSL.BA_CHECKOUT ] ]
-@Field final Map DOCKER_IMAGE_LINUX_CONFIG = [ ba: PSL.BA_LINUX_DOCKER, containerId: "build_tools/ce-tc-prt:almalinux8-gcc11-v2", containerWorkspace: "/tmp/app" ]
+@Field final Map DOCKER_IMAGE_LINUX_CONFIG = [ ba: PSL.BA_LINUX_DOCKER, containerId: "palladio/palladio-tc:almalinux8-gcc11-v0", containerWorkspace: "/tmp/work/ws" ]
 @Field final Map DOCKER_IMAGE_WINDOWS_CONFIG = [ ba: 'win19-64-d', containerId: 'palladio/palladio-tc:win19-vc1437-v0', containerWorkspace: 'c:/tmp/work' ]
 
 @Field final List CONFIGS_TEST = [
@@ -145,15 +145,6 @@ def buildPalladio(cfg, defs, target) {
 	String cmd = ''
 	if (cfg.os == CEPL.CFG_OS_RHEL8) {
 		envMap << [ DEFAULT_UID: '$(id -u)', DEFAULT_GID: '$(id -g)' ]
-
-		cmd = "cd ${src}"
-		cmd += "&& python3 -m ensurepip"
-		cmd += "&& python3 -m pip install --user pipenv"
-		cmd += "&& python3 -m pipenv install"
-		cmd += "&& PYVENV=\$(python3 -m pipenv --venv)"
-		cmd += "&& cd ${cfg.containerWorkspace}"
-		cmd += "&& source \${PYVENV}/bin/activate"
-		cmd += "&& conan remote add --force --insert=0 zrh-conan ${psl.CONAN_REMOTE_URL} && "
 	}
 
     cmd += "cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -S ${src} -B ${bld}"
