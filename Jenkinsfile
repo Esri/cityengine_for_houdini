@@ -33,7 +33,7 @@ import com.esri.zrh.jenkins.psl.UploadTrackingPsl
 
 @Field final List CONFIGS_CHECKOUT = [ [ ba: PSL.BA_CHECKOUT ] ]
 @Field final Map DOCKER_IMAGE_LINUX_CONFIG = [ ba: PSL.BA_LINUX_DOCKER, containerWorkspace: "/tmp/work" ]
-@Field final Map DOCKER_IMAGE_WINDOWS_CONFIG = [ ba: 'win19-64-d', containerId: "palladio/palladio-tc:${DOCKER_IMAGE_TAG_BASE_WINDOWS}-v0", containerWorkspace: 'c:/tmp/work' ]
+@Field final Map DOCKER_IMAGE_WINDOWS_CONFIG = [ ba: 'win19-64-d', containerWorkspace: 'c:/tmp/work' ]
 @Field final Map BUILD_ENV_LINUX_CONFIG = [ os: CEPL.CFG_OS_RHEL8, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_GCC112, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64 ]
 @Field final Map BUILD_ENV_WINDOWS_CONFIG = [ os: CEPL.CFG_OS_WIN10, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_VC1437, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64 ]
 @Field final Map BUILD_ENV_LINUX_CONFIG_CESDK_LATEST = BUILD_ENV_LINUX_CONFIG
@@ -165,14 +165,9 @@ def buildPalladio(cfg, defs, target) {
 }
 
 String getContainerId(cfg) {
-    if (cfg.os == CEPL.CFG_OS_RHEL8) {
-        String tagBase = DOCKER_IMAGE_TAG_BASE_LINUX
-        String hdkVersion = cfg.houdini.replace(".", "")
-        return "${DOCKER_IMAGE_ID}:${tagBase}-hdk${hdkVersion}-${DOCKER_IMAGE_REV}"
-    }
-    else {
-        return cfg.containerId
-    }
+	String tagBase = (cfg.os == CEPL.CFG_OS_RHEL8) ? DOCKER_IMAGE_TAG_BASE_LINUX : DOCKER_IMAGE_TAG_BASE_WINDOWS
+	String hdkVersion = cfg.houdini.replace(".", "")
+	return "${DOCKER_IMAGE_ID}:${tagBase}-hdk${hdkVersion}-${DOCKER_IMAGE_REV}"
 }
 
 def scanAndPublishBuildIssues(Map cfg, String consoleOut) {
