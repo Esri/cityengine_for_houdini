@@ -290,6 +290,21 @@ TEST_CASE("legalize file stem and ensure it does not exist") {
 		CHECK(p == base / "foo_0.bar");
 	}
 
+	SECTION("special characters (colons)") {
+		std::filesystem::path p = base / "Candl;er::1.0?CandlerBuilding.rpk";
+		ensureNonExistingFile(p);
+		CHECK(p == base / "Candl;er__1.0_CandlerBuilding.rpk");
+	}
+
+	SECTION("existing file with special characters (colons)") {
+		std::filesystem::path c = base / "Candl;er__1.0_CandlerBuilding.rpk";
+		std::ofstream out(c);
+		REQUIRE(std::filesystem::exists(c));
+		std::filesystem::path p = base / "Candl;er::1.0?CandlerBuilding.rpk";
+		ensureNonExistingFile(p);
+		CHECK(p == base / "Candl;er__1.0_CandlerBuilding_0.rpk");
+	}
+
 	std::filesystem::remove_all(base);
 }
 
