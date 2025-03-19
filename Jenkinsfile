@@ -32,11 +32,6 @@ import com.esri.zrh.jenkins.psl.UploadTrackingPsl
 	[ os: CEPL.CFG_OS_WIN10, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_VC1437, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64 ],
 ]
 
-@Field final List CONFIGS_HOUDINI_190 = [
-	DOCKER_IMAGE_LINUX_CONFIG + [ os: CEPL.CFG_OS_RHEL8, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_GCC112, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '19.0' ],
-	[ os: CEPL.CFG_OS_WIN10, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_VC1437, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '19.0' ],
-]
-
 @Field final List CONFIGS_HOUDINI_195 = [
 	DOCKER_IMAGE_LINUX_CONFIG + [ os: CEPL.CFG_OS_RHEL8, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_GCC112, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '19.5' ],
 	[ os: CEPL.CFG_OS_WIN10, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_VC1437, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '19.5' ],
@@ -45,8 +40,13 @@ import com.esri.zrh.jenkins.psl.UploadTrackingPsl
 @Field final List CONFIGS_HOUDINI_200 = [
 	DOCKER_IMAGE_LINUX_CONFIG + [ os: CEPL.CFG_OS_RHEL8, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_GCC112, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '20.0' ],
 	[ os: CEPL.CFG_OS_WIN10, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_VC1437, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '20.0' ],
-	DOCKER_IMAGE_LINUX_CONFIG + [ grp: 'cesdkLatest', os: CEPL.CFG_OS_RHEL8, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_GCC112, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '20.0', cesdk: PAPL.Dependencies.CESDK_LATEST ],
-	[ grp: 'cesdkLatest', os: CEPL.CFG_OS_WIN10, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_VC1438, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '20.0', cesdk: PAPL.Dependencies.CESDK_LATEST ],
+]
+
+@Field final List CONFIGS_HOUDINI_205 = [
+	DOCKER_IMAGE_LINUX_CONFIG + [ os: CEPL.CFG_OS_RHEL8, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_GCC112, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '20.5' ],
+	[ os: CEPL.CFG_OS_WIN10, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_VC1437, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '20.5' ],
+	DOCKER_IMAGE_LINUX_CONFIG + [ grp: 'cesdkLatest', os: CEPL.CFG_OS_RHEL8, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_GCC112, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '20.5', cesdk: PAPL.Dependencies.CESDK_LATEST ],
+	[ grp: 'cesdkLatest', os: CEPL.CFG_OS_WIN10, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_VC1438, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '20.5', cesdk: PAPL.Dependencies.CESDK_LATEST ],
 ]
 
 
@@ -90,9 +90,9 @@ Map taskGenTest() {
 
 Map taskGenBuild() {
     Map tasks = [:]
-	tasks << cepl.generateTasks('pld-hdn19.0', this.&taskBuildPalladio, CONFIGS_HOUDINI_190)
 	tasks << cepl.generateTasks('pld-hdn19.5', this.&taskBuildPalladio, CONFIGS_HOUDINI_195)
 	tasks << cepl.generateTasks('pld-hdn20.0', this.&taskBuildPalladio, CONFIGS_HOUDINI_200)
+	tasks << cepl.generateTasks('pld-hdn20.5', this.&taskBuildPalladio, CONFIGS_HOUDINI_205)
 	return tasks;
 }
 
