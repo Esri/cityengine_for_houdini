@@ -350,12 +350,17 @@ std::wstring getFileExtensionString(const std::vector<std::wstring>& extensions)
 }
 
 void ensureNonExistingFile(std::filesystem::path& p) {
-	std::string stem = p.stem().generic_string();
+	std::string fileName = p.filename().generic_string();
 
-	// filter out common illegal characters from the stem
-	std::replace_if(
-	        stem.begin(), stem.end(), [](char c) { return (ILLEGAL_FS_CHARS.find(c) != std::string::npos); }, '_');
-	p = p.parent_path() / (stem + p.extension().generic_string());
+	// filter out common illegal characters
+	// note: this needs to be done before we use functions like p.stem()
+	//       to correctly handle ':' in Windows paths
+	auto filterChar = [](char c) { return (ILLEGAL_FS_CHARS.find(c) != std::string::npos); };
+	std::replace_if(fileName.begin(), fileName.end(), filterChar, '_');
+
+	auto cleanFileName =  std::filesystem::path(fileName);
+	auto stem = cleanFileName.stem().generic_string();
+	p = p.parent_path() / (stem + cleanFileName.extension().generic_string());
 
 	// ensure we do not produce a collision with existing file
 	for (size_t suf = 0; std::filesystem::exists(p); suf++) {
