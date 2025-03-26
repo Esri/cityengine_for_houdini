@@ -301,6 +301,16 @@ The below steps will populate your local Conan repository with dependencies for 
 1. Download CityEngine SDK: `conan create -pr conan/profiles/windows-v143 conan/cesdk cesdk/3.2.10650@esri-rd-zurich/stable`
 1. Extract and package the HDK from your local Houdini installation (adjust Z to your Houdini version): `conan create -pr conan/profiles/windows-v143 conan/houdini houdini/20.5.Z@sidefx/stable` (Note: use the option `-e HOUDINI_INSTALL=C:/path/to/your/houdini/installation`, if Houdini is not installed at the standard location for Windows).
 
+##### Docker Toolchain Images
+
+This repo includes Dockerfiles for Linux/Windows toolchain images. Run the following commands in the Palladio repo root:
+- Linux: `docker build -t palladio-tc -f docker/linux/Dockerfile --build-context houdini=<path to Houdini installation X.Y.Z> --build-arg HOUDINI_VERSION=X.Y.Z .`
+- Windows (note, there is also the `build.py` helper script for the below):
+  ```
+  docker build -t palladio-tc-base -f docker/windows/Dockerfile-base .
+  docker build -t palladio-tc -f docker/windows/Dockerfile-houdini --build-arg HOUDINI_VERSION=X.Y.Z 'C:/Program Files/Side Effects Software/Houdini X.Y.Z'
+  ```
+
 #### Building Palladio
 
 Note: to build for another Houdini version, add the cmake argument `-DPLD_HOUDINI_VERSION=X.Y`.
