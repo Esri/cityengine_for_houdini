@@ -70,6 +70,7 @@ struct ConversionHelper {
 };
 
 // transfer texture coordinates
+// clang-format off
 const std::vector<std::string> UV_ATTR_NAMES {
 	"uv", "uv1", "uv2", "uv3", "uv4", "uv5"
 #if PRT_VERSION_MAJOR > 1
@@ -77,6 +78,7 @@ const std::vector<std::string> UV_ATTR_NAMES {
 	        "uv6", "uv7", "uv8", "uv9"
 #endif
 };
+// clang-format on
 
 template <typename P>
 void convertPolygon(ConversionHelper& ch, const P& p, const std::vector<GA_ROHandleV2D>& uvHandles) {
