@@ -24,19 +24,32 @@
 
 #include "GA/GA_PageHandle.h"
 #include "GEO/GEO_PrimPolySoup.h"
+#include "GQ/GQ_Detail.h"
+#include "GQ/GQ_Face.h"
 #include "GU/GU_Detail.h"
 #include "UT/UT_String.h"
 
+#include <numeric>
 #include <variant>
 
 namespace {
 
-constexpr bool DBG = false;
+constexpr bool DBG = true;
 
 struct UV {
 	std::vector<double> uvs;
 	std::vector<uint32_t> idx;
 };
+
+// transfer texture coordinates
+// clang-format off
+const std::vector<std::string> UV_ATTR_NAMES {
+	"uv", "uv1", "uv2", "uv3", "uv4", "uv5"
+#if PRT_VERSION_MAJOR > 1
+	, "uv6", "uv7", "uv8", "uv9"
+#endif
+};
+// clang-format on
 
 struct ConversionHelper {
 	std::vector<uint32_t> indices;
@@ -45,10 +58,9 @@ struct ConversionHelper {
 	std::vector<UV> uvSets;
 
 	const std::vector<double>& coords;
-	const std::vector<GA_ROHandleV2D>& uvHandles;
 
-	ConversionHelper(const std::vector<double>& c, const std::vector<GA_ROHandleV2D>& h) : coords(c), uvHandles(h) {
-		uvSets.resize(uvHandles.size());
+	explicit ConversionHelper(const std::vector<double>& c) : coords(c) {
+		uvSets.resize(UV_ATTR_NAMES.size());
 	}
 
 	InitialShapeBuilderUPtr createInitialShape() const {
@@ -57,9 +69,9 @@ struct ConversionHelper {
 		isb->setGeometry(coords.data(), coords.size(), indices.data(), indices.size(), faceCounts.data(),
 		                 faceCounts.size(), holes.data(), holes.size());
 
-		for (size_t u = 0; u < uvHandles.size(); u++) {
+		for (size_t u = 0; u < uvSets.size(); u++) {
 			const auto& uvSet = uvSets[u];
-			if (!uvHandles[u].isInvalid() && !uvSet.uvs.empty()) {
+			if (!uvSet.uvs.empty()) {
 				isb->setUVs(uvSet.uvs.data(), uvSet.uvs.size(), uvSet.idx.data(), uvSet.idx.size(), faceCounts.data(),
 				            faceCounts.size(), u);
 			}
@@ -69,21 +81,33 @@ struct ConversionHelper {
 	}
 };
 
-// transfer texture coordinates
-// clang-format off
-const std::vector<std::string> UV_ATTR_NAMES {
-	"uv", "uv1", "uv2", "uv3", "uv4", "uv5"
-#if PRT_VERSION_MAJOR > 1
-	        ,
-	        "uv6", "uv7", "uv8", "uv9"
-#endif
-};
-// clang-format on
+std::pair<std::unique_ptr<GU_Detail>, std::unique_ptr<GQ_Detail>> extractHoles(GU_Detail const* detail,
+                                                                               const GA_Primitive& p) {
+	GA_PrimitiveGroup holeGroup(*detail);
+	holeGroup.add(p);
 
-template <typename P>
-void convertPolygon(ConversionHelper& ch, const P& p, const std::vector<GA_ROHandleV2D>& uvHandles) {
+	auto holeDetail = std::make_unique<GU_Detail>(detail, &holeGroup);
+
+	auto gqd = std::make_unique<GQ_Detail>(holeDetail.get(), nullptr, -1.0f);
+	gqd->unHole(0);
+
+	UT_Options defragOpts;
+	defragOpts.setOptionB("removeholes", true);
+	holeDetail->defragment(&defragOpts);
+	//holeDetail->sortVertexMapByPrimitiveUse();
+
+	return std::make_pair(std::move(holeDetail), std::move(gqd));
+}
+
+void convertPolygon(ConversionHelper& ch, GU_Detail const* detail, GEO_PrimPolySoup::PolygonIterator const& p) {
+	std::vector<GA_ROHandleV2D> uvHandles(UV_ATTR_NAMES.size());
+	for (uint32_t uvSet = 0; uvSet < UV_ATTR_NAMES.size(); uvSet++) {
+		const std::string& attrName = UV_ATTR_NAMES[uvSet];
+		const GA_Attribute* attrib = detail->findFloatTuple(GA_ATTRIB_VERTEX, attrName, 2);
+		uvHandles[uvSet].bind(attrib);
+	}
+
 	const GA_Size vtxCnt = p.getVertexCount();
-
 	ch.faceCounts.push_back(static_cast<uint32_t>(vtxCnt));
 
 	for (GA_Size i = vtxCnt - 1; i >= 0; i--) {
@@ -107,6 +131,107 @@ void convertPolygon(ConversionHelper& ch, const P& p, const std::vector<GA_ROHan
 			uvSet.idx.push_back(uvSet.idx.size());
 			if constexpr (DBG)
 				LOG_DBG << "     uv " << i << ": " << v.x() << ", " << v.y();
+		}
+	}
+}
+
+void convertPolygon(ConversionHelper& ch, GU_Detail const* detail, GA_Primitive const& p) {
+	const GA_Size vtxCnt = p.getVertexCount();
+
+	std::pair<std::unique_ptr<GU_Detail>, std::unique_ptr<GQ_Detail>> holeDetail = extractHoles(detail, p);
+
+	if (!holeDetail.first) {
+		std::vector<GA_ROHandleV2D> uvHandles(UV_ATTR_NAMES.size());
+		for (uint32_t uvSet = 0; uvSet < UV_ATTR_NAMES.size(); uvSet++) {
+			const std::string& attrName = UV_ATTR_NAMES[uvSet];
+			const GA_Attribute* attrib = detail->findFloatTuple(GA_ATTRIB_VERTEX, attrName, 2);
+			uvHandles[uvSet].bind(attrib);
+		}
+
+		ch.faceCounts.push_back(static_cast<uint32_t>(vtxCnt));
+
+		for (GA_Size i = vtxCnt - 1; i >= 0; i--) {
+			ch.indices.push_back(static_cast<uint32_t>(p.getPointIndex(i)));
+			if constexpr (DBG)
+				LOG_DBG << "      vtx " << i << ": point idx = " << p.getPointIndex(i);
+		}
+
+		for (size_t u = 0; u < uvHandles.size(); u++) {
+			const auto& uvh = uvHandles[u];
+			if (uvh.isInvalid())
+				continue;
+
+			auto& uvSet = ch.uvSets[u];
+
+			for (GA_Size i = vtxCnt - 1; i >= 0; i--) {
+				GA_Offset off = p.getVertexOffset(i);
+				const auto v = uvh.get(off);
+				uvSet.uvs.push_back(v.x());
+				uvSet.uvs.push_back(v.y());
+				uvSet.idx.push_back(uvSet.idx.size());
+				if constexpr (DBG)
+					LOG_DBG << "     uv " << i << ": " << v.x() << ", " << v.y();
+			}
+		}
+	}
+	else {
+		std::vector<GA_ROHandleV2D> uvHandles(UV_ATTR_NAMES.size());
+		for (uint32_t uvSet = 0; uvSet < UV_ATTR_NAMES.size(); uvSet++) {
+			const std::string& attrName = UV_ATTR_NAMES[uvSet];
+			const GA_Attribute* attrib = holeDetail.first->findFloatTuple(GA_ATTRIB_VERTEX, attrName, 2);
+			uvHandles[uvSet].bind(attrib);
+		}
+
+		GA_Size const primCount = holeDetail.first->getNumPrimitives();
+
+		ch.faceCounts.reserve(ch.faceCounts.size() + primCount);
+		ch.holes.reserve(ch.holes.size() + primCount + 1);
+		ch.indices.reserve(ch.indices.size() + vtxCnt);
+
+		for (GA_Offset i = 0; i < primCount; i++) {
+			GA_Primitive const* prim = holeDetail.first->getPrimitive(i);
+			ch.holes.push_back(ch.faceCounts.size());
+			ch.faceCounts.push_back(static_cast<uint32_t>(prim->getVertexCount()));
+
+			std::vector<int32_t> indices(prim->getVertexCount());
+			for (GA_Offset j = 0; j < prim->getVertexCount(); j++) {
+				indices[j] = static_cast<int32_t>(prim->getPointIndex(j));
+			}
+
+			//			if (i == 0)
+			ch.indices.insert(ch.indices.end(), indices.rbegin(), indices.rend());
+			//			else
+			//				ch.indices.insert(ch.indices.end(), indices.begin(), indices.end());
+		}
+
+		// required by PRT to delimit the holes belonging to a face
+		ch.holes.push_back(std::numeric_limits<uint32_t>::max());
+
+		for (size_t u = 0; u < uvHandles.size(); u++) {
+			const auto& uvh = uvHandles[u];
+			if (uvh.isInvalid())
+				continue;
+
+			auto& uvSet = ch.uvSets[u];
+
+			for (GA_Offset i = 0; i < primCount; i++) {
+				GA_Primitive const* prim = holeDetail.first->getPrimitive(i);
+
+				for (GA_Offset j = 0; j < prim->getVertexCount(); j++) {
+					GA_Offset vtxOff = holeDetail.first->getPrimitiveVertexOffset(holeDetail.first->primitiveOffset(i), j);
+					const auto v = uvh.get(vtxOff);
+					uvSet.uvs.push_back(v.x());
+					uvSet.uvs.push_back(v.y());
+					LOG_DBG << "uv " << j << ", vtxOff " << vtxOff << " = " << v.x() << ", " << v.y();
+				}
+
+				std::vector<int32_t> indices(prim->getVertexCount());
+				std::iota(indices.begin(), indices.end(), uvSet.idx.size());
+				//				if (i == 0)
+				uvSet.idx.insert(uvSet.idx.end(), indices.rbegin(), indices.rend());
+				//				else
+				//					uvSet.idx.insert(uvSet.idx.end(), indices.begin(), indices.end());
+			}
 		}
 	}
 }
@@ -204,21 +329,13 @@ void ShapeConverter::get(const GU_Detail* detail, const PrimitiveClassifier& pri
 		coords.push_back(p.z());
 	}
 
-	// scan for uv attributes
-	std::vector<GA_ROHandleV2D> uvHandles(UV_ATTR_NAMES.size());
-	for (uint32_t uvSet = 0; uvSet < UV_ATTR_NAMES.size(); uvSet++) {
-		const std::string& attrName = UV_ATTR_NAMES[uvSet];
-		const GA_Attribute* attrib = detail->findFloatTuple(GA_ATTRIB_VERTEX, attrName, 2);
-		uvHandles[uvSet].bind(attrib);
-	}
-
 	// -- loop over all primitive partitions and create shape builders
 	uint32_t isIdx = 0;
 	for (auto pIt = partitions.cbegin(); pIt != partitions.cend(); ++pIt, ++isIdx) {
 		if constexpr (DBG)
 			LOG_DBG << "   -- creating initial shape " << isIdx << ", prim count = " << pIt->second.size();
 
-		ConversionHelper ch(coords, uvHandles);
+		ConversionHelper ch(coords);
 
 		// merge primitive geometry inside partition (potential multi-polygon initial shape)
 		for (const auto& prim : pIt->second) {
@@ -228,12 +345,12 @@ void ShapeConverter::get(const GU_Detail* detail, const PrimitiveClassifier& pri
 			const auto& primType = prim->getTypeId();
 			switch (primType.get()) {
 				case GA_PRIMPOLY:
-					convertPolygon(ch, *prim, uvHandles);
+					convertPolygon(ch, detail, *prim);
 					break;
 				case GA_PRIMPOLYSOUP:
 					for (GEO_PrimPolySoup::PolygonIterator pit(static_cast<const GEO_PrimPolySoup&>(*prim));
 					     !pit.atEnd(); ++pit) {
-						convertPolygon(ch, pit, uvHandles);
+						convertPolygon(ch, detail, pit);
 					}
 					break;
 				default:
