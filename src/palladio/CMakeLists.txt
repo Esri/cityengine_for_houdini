@@ -24,7 +24,8 @@ add_library(${TGT_PALLADIO} SHARED
         MultiWatch.cpp
         PrimitiveClassifier.cpp
         LogHandler.cpp
-        LRUCache.h)
+        LRUCache.h
+        HoleConverter.cpp)
 
 get_target_property(CODEC_SOURCE_DIR ${TGT_CODEC} SOURCE_DIR)
 target_include_directories(${TGT_PALLADIO} PRIVATE
