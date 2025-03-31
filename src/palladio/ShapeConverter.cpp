@@ -67,6 +67,22 @@ struct ConversionHelper {
 
 		return isb;
 	}
+
+	template <typename L>
+	void dump(L&& logger) const {
+		auto indicesStr =
+		        std::accumulate(indices.begin(), indices.end(), std::string(), [](std::string& s, uint32_t i) {
+			        s += std::to_string(i) + ", ";
+			        return s;
+		        });
+		logger << "indices: " << indicesStr;
+
+		auto holesStr = std::accumulate(holes.begin(), holes.end(), std::string(), [](std::string& s, uint32_t i) {
+			s += std::to_string(i) + ", ";
+			return s;
+		});
+		logger << "holes: " << holesStr;
+	}
 };
 
 // transfer texture coordinates
@@ -109,6 +125,9 @@ void convertPolygon(ConversionHelper& ch, const P& p, const std::vector<GA_ROHan
 				LOG_DBG << "     uv " << i << ": " << v.x() << ", " << v.y();
 		}
 	}
+
+	if constexpr (DBG)
+		ch.dump(LOG_DBG);
 }
 
 std::array<double, 3> getCentroid(const std::vector<double>& coords, const ConversionHelper& ch) {
