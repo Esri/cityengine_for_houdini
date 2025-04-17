@@ -71,24 +71,31 @@ prt::Status AttrEvalCallbacks::cgaReportString(size_t isIndex, int32_t shapeID, 
 }
 
 prt::Status AttrEvalCallbacks::attrBool(size_t isIndex, int32_t shapeID, const wchar_t* key, bool value) {
-	if constexpr (DBG)
-		LOG_DBG << "attrBool: isIndex = " << isIndex << ", key = " << key << " = " << value;
+	if constexpr (DBG) {
+		std::string msg = "attrBool: isIndex = " + std::to_string(isIndex) + ", key = " + toOSNarrowFromUTF16(key) +
+		                  " = " + std::to_string(value);
+		mNode->addMessage(SOP_MESSAGE, msg.c_str());
+	}
 	if (mRuleFileInfo[isIndex] && !isHiddenAttribute(mRuleFileInfo[isIndex], key))
 		mAMBS[isIndex]->setBool(key, value);
 	return prt::STATUS_OK;
 }
 
 prt::Status AttrEvalCallbacks::attrFloat(size_t isIndex, int32_t shapeID, const wchar_t* key, double value) {
-	if constexpr (DBG)
-		LOG_DBG << "attrFloat: isIndex = " << isIndex << ", key = " << key << " = " << value;
+	if constexpr (DBG) {
+		std::string msg = "attrFloat: isIndex = " + std::to_string(isIndex) + ", key = " + toOSNarrowFromUTF16(key) + " = " + std::to_string(value);
+		mNode->addMessage(SOP_MESSAGE, msg.c_str());
+	}
 	if (mRuleFileInfo[isIndex] && !isHiddenAttribute(mRuleFileInfo[isIndex], key))
 		mAMBS[isIndex]->setFloat(key, value);
 	return prt::STATUS_OK;
 }
 
 prt::Status AttrEvalCallbacks::attrString(size_t isIndex, int32_t shapeID, const wchar_t* key, const wchar_t* value) {
-	if constexpr (DBG)
-		LOG_DBG << "attrString: isIndex = " << isIndex << ", key = " << key << " = " << value;
+	if constexpr (DBG) {
+		std::string msg = "attrString: isIndex = " + std::to_string(isIndex) + ", key = " + toOSNarrowFromUTF16(key) + " = " + toOSNarrowFromUTF16(value);
+		mNode->addMessage(SOP_MESSAGE, msg.c_str());
+	}
 	if (mRuleFileInfo[isIndex] && !isHiddenAttribute(mRuleFileInfo[isIndex], key))
 		mAMBS[isIndex]->setString(key, value);
 	return prt::STATUS_OK;
@@ -98,8 +105,10 @@ prt::Status AttrEvalCallbacks::attrString(size_t isIndex, int32_t shapeID, const
 
 prt::Status AttrEvalCallbacks::attrBoolArray(size_t isIndex, int32_t /*shapeID*/, const wchar_t* key,
                                              const bool* values, size_t size, size_t /*nRows*/) {
-	if constexpr (DBG)
-		LOG_DBG << "attrBoolArray: isIndex = " << isIndex << ", key = " << key << " = " << values;
+	if constexpr (DBG) {
+		std::string msg = "attrBoolArray: isIndex = " + std::to_string(isIndex) + ", key = " + toOSNarrowFromUTF16(key);
+		mNode->addMessage(SOP_MESSAGE, msg.c_str());
+	}
 	if (mRuleFileInfo[isIndex] && !isHiddenAttribute(mRuleFileInfo[isIndex], key))
 		mAMBS[isIndex]->setBoolArray(key, values, size);
 	return prt::STATUS_OK;
@@ -107,8 +116,10 @@ prt::Status AttrEvalCallbacks::attrBoolArray(size_t isIndex, int32_t /*shapeID*/
 
 prt::Status AttrEvalCallbacks::attrFloatArray(size_t isIndex, int32_t /*shapeID*/, const wchar_t* key,
                                               const double* values, size_t size, size_t /*nRows*/) {
-	if constexpr (DBG)
-		LOG_DBG << "attrFloatArray: isIndex = " << isIndex << ", key = " << key << " = " << values;
+	if constexpr (DBG) {
+		std::string msg = "attrFloatArray: isIndex = " + std::to_string(isIndex) + ", key = " + toOSNarrowFromUTF16(key);
+		mNode->addMessage(SOP_MESSAGE, msg.c_str());
+	}
 	if (mRuleFileInfo[isIndex] && !isHiddenAttribute(mRuleFileInfo[isIndex], key))
 		mAMBS[isIndex]->setFloatArray(key, values, size);
 	return prt::STATUS_OK;
@@ -116,8 +127,10 @@ prt::Status AttrEvalCallbacks::attrFloatArray(size_t isIndex, int32_t /*shapeID*
 
 prt::Status AttrEvalCallbacks::attrStringArray(size_t isIndex, int32_t /*shapeID*/, const wchar_t* key,
                                                const wchar_t* const* values, size_t size, size_t /*nRows*/) {
-	if constexpr (DBG)
-		LOG_DBG << "attrStringArray: isIndex = " << isIndex << ", key = " << key << " = " << values;
+	if constexpr (DBG) {
+		std::string msg = "attrStringArray: isIndex = " + std::to_string(isIndex) + ", key = " + toOSNarrowFromUTF16(key);
+		mNode->addMessage(SOP_MESSAGE, msg.c_str());
+	}
 	if (mRuleFileInfo[isIndex] && !isHiddenAttribute(mRuleFileInfo[isIndex], key))
 		mAMBS[isIndex]->setStringArray(key, values, size);
 	return prt::STATUS_OK;
