@@ -162,7 +162,7 @@ OP_ERROR SOPGenerate::cookMySop(OP_Context& context) {
 
 	const InitialShapeNOPtrVector& is = shapeData.getInitialShapes();
 	if (is.empty()) {
-		LOG_ERR << getName() << ": could not extract any initial shapes from detail!";
+		addError(SOP_MESSAGE, "could not extract any initial shapes from detail!");
 		return UT_ERROR_ABORT;
 	}
 
@@ -215,7 +215,6 @@ OP_ERROR SOPGenerate::cookMySop(OP_Context& context) {
 	// generate status check: if all shapes fail, we abort cooking (failure of individual shapes is sometimes expected)
 	const size_t isSuccesses = std::count(initialShapeStatus.begin(), initialShapeStatus.end(), prt::STATUS_OK);
 	if (isSuccesses == 0) {
-		LOG_ERR << getName() << ": All initial shapes failed to generate, cooking aborted.";
 		addError(SOP_MESSAGE, "All initial shapes failed to generate.");
 		return UT_ERROR_ABORT;
 	}

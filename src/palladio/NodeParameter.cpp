@@ -124,7 +124,7 @@ int updateRPK(void* data, int, fpreal32 time, const PRM_Template*) {
 
 	ResolveMapSPtr resolveMap = prtCtx->getResolveMap(nextRPK);
 	if (!resolveMap) {
-		LOG_WRN << "invalid resolve map";
+		node->addWarning(SOP_MESSAGE, "invalid resolve map");
 		return NOT_CHANGED;
 	}
 
@@ -132,7 +132,7 @@ int updateRPK(void* data, int, fpreal32 time, const PRM_Template*) {
 
 	auto cgb = getCGB(resolveMap); // key -> uri
 	if (!cgb) {
-		LOG_ERR << "no rule files found in rule package";
+		node->addError(SOP_MESSAGE, "no rule files found in rule package");
 		return NOT_CHANGED;
 	}
 	const std::wstring cgbKey = cgb->first;
@@ -145,7 +145,7 @@ int updateRPK(void* data, int, fpreal32 time, const PRM_Template*) {
 	const RuleFileInfoUPtr ruleFileInfo(
 	        prt::createRuleFileInfo(cgbURI.c_str(), prtCtx->mPRTCache.get(), &status)); // TODO: cache
 	if (!ruleFileInfo || (status != prt::STATUS_OK) || (ruleFileInfo->getNumRules() == 0)) {
-		LOG_ERR << "failed to get rule file info or rule file does not contain any rules";
+		node->addError(SOP_MESSAGE, "failed to get rule file info or rule file does not contain any rules");
 		return NOT_CHANGED;
 	}
 

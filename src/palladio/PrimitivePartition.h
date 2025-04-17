@@ -36,8 +36,8 @@ public:
 
 	PartitionMap mPrimitives;
 
-	PrimitivePartition(const GA_Detail* detail, const PrimitiveClassifier& primCls);
-	void add(const GA_Detail* detail, const PrimitiveClassifier& primCls, const GA_Primitive* p);
+	PrimitivePartition(const GU_Detail* detail, const PrimitiveClassifier& primCls);
+	void add(const GU_Detail* detail, const PrimitiveClassifier& primCls, const GA_Primitive* p);
 
 	const PartitionMap& get() const {
 		return mPrimitives;

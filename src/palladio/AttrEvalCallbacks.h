@@ -20,12 +20,14 @@
 
 #include "prt/Callbacks.h"
 
+#include "SOP/SOP_Node.h"
+
 #include <vector>
 
 class AttrEvalCallbacks : public prt::Callbacks {
 public:
-	explicit AttrEvalCallbacks(AttributeMapBuilderVector& ambs, const std::vector<RuleFileInfoUPtr>& ruleFileInfo)
-	    : mAMBS(ambs), mRuleFileInfo(ruleFileInfo) {}
+	explicit AttrEvalCallbacks(SOP_Node* node, AttributeMapBuilderVector& ambs, const std::vector<RuleFileInfoUPtr>& ruleFileInfo)
+	    : mNode(node), mAMBS(ambs), mRuleFileInfo(ruleFileInfo) {}
 	~AttrEvalCallbacks() override = default;
 
 	prt::Status generateError(size_t isIndex, prt::Status status, const wchar_t* message) override;
@@ -63,6 +65,7 @@ public:
 #endif
 
 private:
+	SOP_Node* mNode;
 	AttributeMapBuilderVector& mAMBS;
 	const std::vector<RuleFileInfoUPtr>& mRuleFileInfo;
 };

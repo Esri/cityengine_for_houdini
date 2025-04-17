@@ -25,14 +25,14 @@ constexpr int32 INVALID_CLS_VALUE = -1;
 
 } // namespace
 
-PrimitivePartition::PrimitivePartition(const GA_Detail* detail, const PrimitiveClassifier& primCls) {
+PrimitivePartition::PrimitivePartition(const GU_Detail* detail, const PrimitiveClassifier& primCls) {
 	const GA_Primitive* prim = nullptr;
-	GA_FOR_ALL_PRIMITIVES(detail, prim) {
+	GA_FOR_ALL_PRIMITIVES(static_cast<GA_Detail const*>(detail), prim) {
 		add(detail, primCls, prim);
 	}
 }
 
-void PrimitivePartition::add(const GA_Detail* detail, const PrimitiveClassifier& primCls, const GA_Primitive* p) {
+void PrimitivePartition::add(const GU_Detail* detail, const PrimitiveClassifier& primCls, const GA_Primitive* p) {
 	if constexpr (DBG)
 		LOG_DBG << "      adding prim: " << detail->primitiveIndex(p->getMapOffset());
 
@@ -45,11 +45,14 @@ void PrimitivePartition::add(const GA_Detail* detail, const PrimitiveClassifier&
 		const GA_ROAttributeRef r(detail->findPrimitiveAttribute(updatedPrimCls.name));
 		if (r.isValid()) {
 			const auto& sc = r->getStorageClass();
-			if (sc == GA_STORECLASS_STRING || sc == GA_STORECLASS_INT)
+			if (sc == GA_STORECLASS_STRING || sc == GA_STORECLASS_INT) {
 				primClsAttrRef = r; // we found the primitive classifier attribute itself
-			else
-				LOG_WRN << "Ignoring primitive classifier '" << r->getName()
-				        << "', it is neither of type string or int";
+			}
+			else {
+				detail->addWarning(GU_ERROR_MESSAGE, ("Ignoring primitive classifier '" + r->getName().toStdString() +
+				                                      "', it is neither of type string or int")
+				                                             .c_str());
+			}
 		}
 	}
 
@@ -83,7 +86,7 @@ void PrimitivePartition::add(const GA_Detail* detail, const PrimitiveClassifier&
 			}
 			else {
 				mPrimitives[INVALID_CLS_VALUE].push_back(p);
-				LOG_WRN << "primitive classifier attribute has empty string value -> fallback shape";
+				detail->addWarning(GU_ERROR_MESSAGE, "primitive classifier attribute has empty string value -> fallback shape");
 			}
 		}
 		else {

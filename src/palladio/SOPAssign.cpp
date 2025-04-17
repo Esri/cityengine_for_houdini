@@ -83,7 +83,6 @@ RuleFileInfoUPtr getRuleFileInfoFromShapeData(const GU_Detail* detail, ShapeData
 		errors.append("Could not read Rule Package '")
 		        .append(ma.mRPK.string())
 		        .append("', aborting default rule attribute evaluation");
-		LOG_ERR << errors;
 		return {};
 	}
 
@@ -681,7 +680,7 @@ bool evaluateDefaultRuleAttributes(SOPAssign* node, const GU_Detail* detail, Sha
 			errors.append("Could not read Rule Package '")
 			        .append(ma.mRPK.string())
 			        .append("', aborting default rule attribute evaluation");
-			LOG_ERR << errors;
+			node->addError(SOP_MESSAGE, errors.c_str());
 			return false;
 		}
 
@@ -705,7 +704,7 @@ bool evaluateDefaultRuleAttributes(SOPAssign* node, const GU_Detail* detail, Sha
 
 		auto cgb = getCGB(resolveMap); // key -> uri
 		if (!cgb) {
-			LOG_ERR << "no rule files found in rule package";
+			node->addError(SOP_MESSAGE, "no rule files found in rule package");
 			return false;
 		}
 		const std::wstring ruleFile = cgb->first;
@@ -718,13 +717,16 @@ bool evaluateDefaultRuleAttributes(SOPAssign* node, const GU_Detail* detail, Sha
 		if (status == prt::STATUS_OK && initialShape != nullptr) {
 			shapeData.addShape(initialShape, std::move(amb), std::move(ruleAttr));
 		}
-		else
-			LOG_WRN << "failed to create initial shape " << shapeName << ": " << prt::getStatusDescription(status);
+		else {
+			std::string msg = "failed to create initial shape ";
+			msg.append(toOSNarrowFromUTF16(shapeName)).append(": ").append(prt::getStatusDescription(status));
+			node->addWarning(SOP_MESSAGE, errors.c_str());
+		}
 	}
 	assert(shapeData.isValid());
 
 	// run generate to evaluate default rule attributes
-	AttrEvalCallbacks aec(shapeData.getRuleAttributeMapBuilders(), ruleFileInfos);
+	AttrEvalCallbacks aec(node, shapeData.getRuleAttributeMapBuilders(), ruleFileInfos);
 	const InitialShapeNOPtrVector& is = shapeData.getInitialShapes();
 	const prt::Status stat = prt::generate(is.data(), is.size(), nullptr, encs, encsCount, encsOpts, &aec,
 	                                       prtCtx->mPRTCache.get(), nullptr, nullptr, nullptr);
@@ -734,7 +736,7 @@ bool evaluateDefaultRuleAttributes(SOPAssign* node, const GU_Detail* detail, Sha
 		        .append("' (")
 		        .append(std::to_string(stat))
 		        .append(")");
-		LOG_ERR << errors;
+		node->addError(SOP_MESSAGE, errors.c_str());
 		return false;
 	}
 
@@ -1233,7 +1235,6 @@ OP_ERROR SOPAssign::cookMySop(OP_Context& context) {
 		if (!canContinue) {
 			const std::string errMsg =
 			        "Could not successfully evaluate default rule attributes:\n" + evalAttrErrorMessage;
-			LOG_ERR << getName() << ": " << errMsg;
 			addError(SOP_MESSAGE, errMsg.c_str());
 			return UT_ERROR_ABORT;
 		}
@@ -1245,8 +1246,10 @@ OP_ERROR SOPAssign::cookMySop(OP_Context& context) {
 
 		const RuleFileInfoUPtr& ruleFileInfo =
 		        getRuleFileInfoFromShapeData(gdp, shapeData, 0, mShapeConverter, mPRTCtx, evalAttrErrorMessage);
-		if (!ruleFileInfo)
+		if (!ruleFileInfo) {
+			addError(SOP_MESSAGE, evalAttrErrorMessage.c_str());
 			return UT_ERROR_ABORT;
+		}
 
 		const fpreal time = CHgetEvalTime();
 		const std::filesystem::path rpk = AssignNodeParams::getRPK(this, time);

@@ -49,7 +49,7 @@ prt::Status AttrEvalCallbacks::assetError(size_t isIndex, prt::CGAErrorLevel lev
 
 prt::Status AttrEvalCallbacks::cgaError(size_t isIndex, int32_t shapeID, prt::CGAErrorLevel level, int32_t methodId,
                                         int32_t pc, const wchar_t* message) {
-	LOG_ERR << message;
+	mNode->addError(SOP_MESSAGE, toOSNarrowFromUTF16(message).c_str());
 	return prt::STATUS_OK;
 }
 

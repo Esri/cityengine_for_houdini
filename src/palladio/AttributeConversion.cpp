@@ -411,7 +411,7 @@ void ToHoudini::setAttributeValues(const prt::AttributeMap* attrMap, const GA_In
                                    const GA_Offset rangeStart, const GA_Size rangeSize) {
 	for (auto& h : mHandleMap) {
 		if (attrMap->hasKey(h.second.key.c_str())) {
-			const HandleVisitor hv(h.second, attrMap, primIndexMap, rangeStart, rangeSize);
+			const HandleVisitor hv(mDetail, h.second, attrMap, primIndexMap, rangeStart, rangeSize);
 			std::visit(hv, h.second.handleType);
 		}
 	}
@@ -450,7 +450,7 @@ void ToHoudini::HandleVisitor::operator()(GA_RWHandleI& handle) const {
 		setHandleRange(primIndexMap, handle, rangeStart, rangeSize, 0, v);
 	}
 	else if (protoHandle.type == prt::Attributable::PT_INT_ARRAY) {
-		LOG_ERR << "int arrays as tuples not yet implemented";
+		mDetail->addError(GU_ERROR_MESSAGE, "int arrays as tuples not yet implemented");
 	}
 }
 
@@ -460,7 +460,7 @@ void ToHoudini::HandleVisitor::operator()(GA_RWHandleC& handle) const {
 		setHandleRange(primIndexMap, handle, rangeStart, rangeSize, 0, v);
 	}
 	else if (protoHandle.type == prt::Attributable::PT_BOOL_ARRAY) {
-		LOG_ERR << "bool arrays as tuples not yet implemented";
+		mDetail->addError(GU_ERROR_MESSAGE, "bool arrays as tuples not yet implemented");
 	}
 }
 

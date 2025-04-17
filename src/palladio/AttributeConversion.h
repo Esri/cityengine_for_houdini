@@ -92,9 +92,9 @@ private:
 
 	class HandleVisitor {
 	public:
-		HandleVisitor(const ProtoHandle& ph, const prt::AttributeMap* m, const GA_IndexMap& pim, GA_Offset rStart,
+		HandleVisitor(GU_Detail* detail, const ProtoHandle& ph, const prt::AttributeMap* m, const GA_IndexMap& pim, GA_Offset rStart,
 		              GA_Size rSize)
-		    : protoHandle(ph), attrMap(m), primIndexMap(pim), rangeStart(rStart), rangeSize(rSize) {}
+		    : mDetail(detail), protoHandle(ph), attrMap(m), primIndexMap(pim), rangeStart(rStart), rangeSize(rSize) {}
 		void operator()(const NoHandle& handle) const {}
 		void operator()(GA_RWBatchHandleS& handle) const;
 		void operator()(GA_RWHandleI& handle) const;
@@ -105,6 +105,7 @@ private:
 		void operator()(GA_RWHandleSA& handle) const;
 
 	private:
+		GU_Detail* mDetail;
 		const ProtoHandle& protoHandle;
 		const prt::AttributeMap* attrMap;
 		const GA_IndexMap& primIndexMap;
