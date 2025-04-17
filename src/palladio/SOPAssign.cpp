@@ -688,7 +688,7 @@ bool evaluateDefaultRuleAttributes(SOPAssign* node, const GU_Detail* detail, Sha
 
 		const std::wstring shapeName = L"shape_" + std::to_wstring(isIdx);
 		if constexpr (DBG)
-			LOG_DBG << "evaluating attrs for shape: " << shapeName;
+			node->addMessage(SOP_MESSAGE, ("evaluating attrs for shape: " + toOSNarrowFromUTF16(shapeName)).c_str());
 
 		// persist rule attributes even if empty (need to live until prt::generate is done)
 		AttributeMapBuilderUPtr amb(prt::AttributeMapBuilder::create());
