@@ -136,6 +136,8 @@ std::pair<std::wstring, std::wstring> tokenizeFirst(const std::wstring& input, w
 }
 
 std::vector<std::pair<std::wstring, std::wstring>> getCGBs(const ResolveMapSPtr& rm) {
+	constexpr bool DBG = false;
+
 	constexpr const size_t START_SIZE = 16 * 1024;
 	auto searchKeyFunc = [&rm](wchar_t* result, size_t* resultSize, prt::Status* status) {
 		constexpr const wchar_t* PROJECT = L"";
@@ -143,18 +145,18 @@ std::vector<std::pair<std::wstring, std::wstring>> getCGBs(const ResolveMapSPtr&
 		rm->searchKey(PROJECT, PATTERN, result, resultSize, status);
 	};
 	std::wstring cgbList = callAPI<wchar_t>(searchKeyFunc, START_SIZE);
-	LOG_DBG << "   cgbList = '" << cgbList << "'";
+	if constexpr (DBG) LOG_DBG << "   cgbList = '" << cgbList << "'";
 
 	const std::vector<std::wstring>& cgbVec = tokenizeAll(cgbList, L';');
 	std::vector<std::pair<std::wstring, std::wstring>> cgbs;
 
 	for (const std::wstring& token : cgbVec) {
-		LOG_DBG << "token: '" << token << "'";
+		if constexpr (DBG) LOG_DBG << "token: '" << token << "'";
 
 		const wchar_t* stringValue = rm->getString(token.c_str());
 		if (stringValue != nullptr) {
 			cgbs.emplace_back(token, stringValue);
-			LOG_DBG << L"got cgb: " << cgbs.back().first << L" => " << cgbs.back().second;
+			if constexpr (DBG) LOG_DBG << L"got cgb: " << cgbs.back().first << L" => " << cgbs.back().second;
 		}
 	}
 	return cgbs;
