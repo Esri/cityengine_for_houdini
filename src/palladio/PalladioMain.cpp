@@ -57,5 +57,6 @@ void newSopOperator(OP_OperatorTable* table) {
 	table->addOperator(new OP_Operator(OP_PLD_GENERATE, OP_PLD_GENERATE, createSOPGenerate,
 	                                   GenerateNodeParams::PARAM_TEMPLATES, 1, 1, nullptr, OP_FLAG_GENERATOR));
 
-	LOG_INF << "Palladio " << PLD_VERSION << " initialized.";
+	auto const opReadyMsg = std::string("Palladio ").append(PLD_VERSION).append(" initialized.");
+	UTgetErrorManager()->addMessage(SOP_OPTYPE_NAME, SOP_MESSAGE, opReadyMsg.c_str());
 }
