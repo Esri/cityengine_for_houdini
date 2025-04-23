@@ -43,7 +43,7 @@
 namespace {
 
 constexpr const wchar_t* PLD_LOG_PREFIX = L"pld";
-constexpr const char* PLD_TMP_PREFIX = "palladio_";
+constexpr const char* PLD_TMP_PREFIX = "cityengine_for_houdini_";
 
 constexpr const char* PRT_LIB_SUBDIR = "prtlib";
 
