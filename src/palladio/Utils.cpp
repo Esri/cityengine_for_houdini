@@ -204,11 +204,11 @@ std::string objectToXML(prt::Object const* obj) {
 
 void getLibraryPath(std::filesystem::path& path, const void* func) {
 #ifdef _WIN32
-	HMODULE dllHandle = 0;
+	HMODULE dllHandle = nullptr;
 	if (!GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCSTR)func, &dllHandle)) {
 		DWORD c = GetLastError();
 		char msg[255];
-		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, 0, c, 0, msg, 255, 0);
+		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nullptr, c, 0, msg, 255, nullptr);
 		throw std::runtime_error("error while trying to get current module handle': " + std::string(msg));
 	}
 	assert(sizeof(TCHAR) == 1);
@@ -218,7 +218,7 @@ void getLibraryPath(std::filesystem::path& path, const void* func) {
 	if (pathSize == 0 || pathSize == PATHMAXSIZE) {
 		DWORD c = GetLastError();
 		char msg[255];
-		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, 0, c, 0, msg, 255, 0);
+		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nullptr, c, 0, msg, 255, nullptr);
 		throw std::runtime_error("error while trying to get current module path': " + std::string(msg));
 	}
 	path = pathA;
