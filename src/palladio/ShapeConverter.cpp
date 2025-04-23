@@ -199,8 +199,7 @@ void convertPolygon(ConversionHelper& ch, const GEO_PrimPolySoup::PolygonIterato
 
 std::array<double, 3> getCentroid(const std::vector<double>& coords, const ConversionHelper& ch) {
 	std::array<double, 3> centroid = {0.0, 0.0, 0.0};
-	for (size_t i = 0; i < ch.indices.size(); i++) {
-		auto idx = ch.indices[i];
+	for (unsigned int idx : ch.indices) {
 		centroid[0] += coords[3 * idx + 0];
 		centroid[1] += coords[3 * idx + 1];
 		centroid[2] += coords[3 * idx + 2];

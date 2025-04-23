@@ -911,9 +911,7 @@ void SOPAssign::updateDefaultCGAAttributes(const ShapeData& shapeData) {
 		defaultRuleAttributeMaps.emplace_back(amb->createAttributeMap());
 	}
 
-	for (size_t isIdx = 0; isIdx < defaultRuleAttributeMaps.size(); isIdx++) {
-		const auto& defaultRuleAttributes = defaultRuleAttributeMaps[isIdx];
-
+	for (AttributeMapUPtr const& defaultRuleAttributes : defaultRuleAttributeMaps) {
 		size_t keyCount = 0;
 		const wchar_t* const* cKeys = defaultRuleAttributes->getKeys(&keyCount);
 		for (size_t k = 0; k < keyCount; k++) {
