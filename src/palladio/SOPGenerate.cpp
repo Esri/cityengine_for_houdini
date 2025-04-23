@@ -85,7 +85,7 @@ namespace {
 enum class BatchMode { OCCLUSION, GENERATION };
 const std::vector<std::string> BATCH_MODE_NAMES = {"occlusion", "generation"};
 
-std::vector<prt::Status> batchGenerate(BatchMode mode, size_t nThreads, std::vector<ModelConverterUPtr>& hg,
+std::vector<prt::Status> batchGenerate(BatchMode mode, uint16_t nThreads, std::vector<ModelConverterUPtr>& hg,
                                        size_t isRangeSize, const InitialShapeNOPtrVector& is,
                                        const std::vector<const wchar_t*>& allEncoders,
                                        const AttributeMapNOPtrVector& allEncoderOptions,
@@ -96,7 +96,7 @@ std::vector<prt::Status> batchGenerate(BatchMode mode, size_t nThreads, std::vec
 
 	std::vector<std::future<void>> futures;
 	futures.reserve(nThreads);
-	for (int8_t ti = 0; ti < nThreads; ti++) {
+	for (uint16_t ti = 0; ti < nThreads; ti++) {
 		auto f = std::async(std::launch::async, [&, ti] { // capture thread index by value, else we have is range chaos
 			const size_t isStartPos = ti * isRangeSize;
 			const size_t isPastEndPos = (ti < nThreads - 1) ? (ti + 1) * isRangeSize : is.size();
