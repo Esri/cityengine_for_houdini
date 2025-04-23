@@ -28,7 +28,7 @@ public:
 	SOPGenerate(const PRTContextUPtr& pCtx, OP_Network* net, const char* name, OP_Operator* op);
 	~SOPGenerate() override = default;
 
-	void opChanged(OP_EventType reason, void* data = nullptr) override;
+	void opChanged(OP_EventType reason, void* data) override;
 
 protected:
 	OP_ERROR cookMySop(OP_Context& context) override;
