@@ -50,7 +50,7 @@ void compareReversed(const std::vector<T>& a, const std::vector<T>& b) {
 int main(int argc, char* argv[]) {
 	assert(!prtCtx);
 	const std::vector<std::filesystem::path> addExtDirs = {TEST_RUN_PRT_EXT_DIR, TEST_RUN_CODEC_EXT_DIR};
-	prtCtx.reset(new PRTContext(addExtDirs));
+	prtCtx = std::make_unique<PRTContext>(addExtDirs);
 	int result = Catch::Session().run(argc, argv);
 	prtCtx.reset();
 	return result;

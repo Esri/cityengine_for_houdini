@@ -901,7 +901,7 @@ void setAttributeRange(const GA_Range& range, H& handle, const V& value) {
 } // namespace
 
 SOPAssign::SOPAssign(const PRTContextUPtr& pCtx, OP_Network* net, const char* name, OP_Operator* op)
-    : SOP_Node(net, name, op), mPRTCtx(pCtx), mShapeConverter(new ShapeConverter()) {}
+    : SOP_Node(net, name, op), mPRTCtx(pCtx), mShapeConverter(std::make_unique<ShapeConverter>()) {}
 
 void SOPAssign::updateDefaultCGAAttributes(const ShapeData& shapeData) {
 	mDefaultCGAAttributes.clear();

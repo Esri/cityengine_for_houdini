@@ -183,8 +183,8 @@ OP_ERROR SOPGenerate::cookMySop(OP_Context& context) {
 			std::vector<ModelConverterUPtr> modelConverters(nThreads);
 			std::generate(modelConverters.begin(), modelConverters.end(),
 			              [this, &groupCreation, &initialShapeStatus, &progress]() -> ModelConverterUPtr {
-				              return ModelConverterUPtr(
-				                      new ModelConverter(gdp, groupCreation, initialShapeStatus, &progress));
+				              return std::make_unique<ModelConverter>(gdp, groupCreation, initialShapeStatus,
+				                                                      &progress);
 			              });
 
 			std::vector<prt::OcclusionSet::Handle> occlusionHandles(is.size());
