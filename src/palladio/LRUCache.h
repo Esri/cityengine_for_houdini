@@ -47,7 +47,7 @@ public:
 		return m_map.find(key) != m_map.end();
 	}
 
-	void insert(const key_type& key, const value_type& value) {
+	virtual void insert(const key_type& key, const value_type& value) {
 		typename map_type::iterator i = m_map.find(key);
 		if (i == m_map.end()) {
 			// insert item into the mCache, but first check if it is full
@@ -152,7 +152,7 @@ public:
 #endif
 	}
 
-	void insert(const K& key, const V& value) {
+	void insert(const K& key, const V& value) override {
 		std::lock_guard<std::mutex> guard(mMutex);
 		Base::insert(key, value);
 	}
