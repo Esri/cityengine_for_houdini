@@ -279,7 +279,7 @@ void overrideMultiParmDefault(SOPAssign* node, const PRM_Parm& parm, const SOPAs
 				if (!std::holds_alternative<std::vector<bool>>(defArray))
 					continue;
 
-				const std::vector<bool>& boolValues = std::get<std::vector<bool>>(defArray);
+				auto const& boolValues = std::get<std::vector<bool>>(defArray);
 				node->setInt(parmInstToken.c_str(), 0, time, boolValues[i]);
 				break;
 			}
@@ -287,7 +287,7 @@ void overrideMultiParmDefault(SOPAssign* node, const PRM_Parm& parm, const SOPAs
 				if (!std::holds_alternative<std::vector<double>>(defArray))
 					continue;
 
-				const std::vector<double>& doubleValues = std::get<std::vector<double>>(defArray);
+				auto const& doubleValues = std::get<std::vector<double>>(defArray);
 				node->setFloat(parmInstToken.c_str(), 0, time, doubleValues[i]);
 				break;
 			}
@@ -295,7 +295,7 @@ void overrideMultiParmDefault(SOPAssign* node, const PRM_Parm& parm, const SOPAs
 				if (!std::holds_alternative<std::vector<std::wstring>>(defArray))
 					continue;
 
-				const std::vector<std::wstring>& wStringValues = std::get<std::vector<std::wstring>>(defArray);
+				auto const& wStringValues = std::get<std::vector<std::wstring>>(defArray);
 				const UT_StringHolder stringValue(toOSNarrowFromUTF16(wStringValues[i]));
 				node->setString(stringValue, CH_StringMeaning::CH_STRING_LITERAL, parmInstToken.c_str(), 0, time);
 				break;
