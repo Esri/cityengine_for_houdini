@@ -17,6 +17,7 @@
 #include "TestCallbacks.h"
 #include "TestUtils.h"
 
+#include "HoleConverter.h"
 #include "PRTContext.h"
 #include "Utils.h"
 #include "encoder/HoudiniEncoder.h"
@@ -867,11 +868,56 @@ TEST_CASE("generate without polygon hole triangulation") {
 	CHECK(cr.cnts.size() == 30); // 26 quads and 4 holes
 
 	REQUIRE(cr.holeCnts.size() == 30); // same as cnts
-	CHECK(cr.holeCnts[5] == 4);       // top face has four holes
+	CHECK(cr.holeCnts[5] == 4);        // top face has four holes
 
 	REQUIRE(cr.holeIdx.size() == 4);
 	CHECK(cr.holeIdx[0] == 26);
 	CHECK(cr.holeIdx[1] == 27);
 	CHECK(cr.holeIdx[2] == 28);
 	CHECK(cr.holeIdx[3] == 29);
+}
+
+TEST_CASE("convert initial shape holes") {
+	struct TestSource : HoleConverter::EdgeSource {
+		virtual HoleConverter::Edges getEdges() const override {
+			return {{0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 0}};
+		}
+
+		virtual int64_t getPointIndex(int64_t vertexIndex) const override {
+			static std::vector<int64_t> V2P = {4, 5, 7, 6, 2, 3, 1, 0, 2, 6};
+			return V2P[vertexIndex];
+		}
+
+		virtual bool isBridge(int64_t pointIndexA, int64_t pointIndexB) const override {
+			return (pointIndexA == 2 && pointIndexB == 6) || (pointIndexA == 6 && pointIndexB == 2);
+		}
+	};
+
+	SECTION("default") {
+		HoleConverter::FaceWithHoles faceWithHole = HoleConverter::extractHoles(TestSource());
+		const HoleConverter::FaceWithHoles expected = {{0, 1, 2, 9}, {4, 5, 6, 7}};
+		CHECK(faceWithHole == expected);
+	}
+
+	SECTION("no bridges") {
+		struct NoBridgesTestSource : TestSource {
+			virtual bool isBridge(int64_t pointIndexA, int64_t pointIndexB) const override {
+				return false;
+			}
+		};
+		HoleConverter::FaceWithHoles faceWithHole = HoleConverter::extractHoles(NoBridgesTestSource());
+		const HoleConverter::FaceWithHoles expected = {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
+		CHECK(faceWithHole == expected);
+	}
+
+	SECTION("empty") {
+		struct EmptyTestSource : TestSource {
+			virtual HoleConverter::Edges getEdges() const override {
+				return {};
+			}
+		};
+		HoleConverter::FaceWithHoles faceWithHole = HoleConverter::extractHoles(EmptyTestSource());
+		const HoleConverter::FaceWithHoles expected = {{}};
+		CHECK(faceWithHole == expected);
+	}
 }

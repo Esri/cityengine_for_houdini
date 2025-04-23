@@ -9,6 +9,7 @@ add_executable(${TGT_TEST}
         TestUtils.cpp
         TestCallbacks.h
         ${TGT_PALLADIO_SOURCE_DIR}/Utils.cpp
+        ${TGT_PALLADIO_SOURCE_DIR}/HoleConverter.cpp
         ${TGT_PALLADIO_SOURCE_DIR}/PRTContext.cpp
         ${TGT_PALLADIO_SOURCE_DIR}/LogHandler.cpp
         ${TGT_PALLADIO_SOURCE_DIR}/ResolveMapCache.cpp

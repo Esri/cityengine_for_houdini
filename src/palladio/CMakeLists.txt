@@ -24,7 +24,8 @@ add_library(${TGT_PALLADIO} SHARED
         MultiWatch.cpp
         PrimitiveClassifier.cpp
         LogHandler.cpp
-        LRUCache.h)
+        LRUCache.h
+        HoleConverter.cpp)
 
 get_target_property(CODEC_SOURCE_DIR ${TGT_CODEC} SOURCE_DIR)
 target_include_directories(${TGT_PALLADIO} PRIVATE
@@ -43,6 +44,10 @@ if (PLD_TEST)
 endif ()
 
 if (PLD_LINUX)
+    # suppress GCC warnings triggered within HDK
+    target_compile_options(${TGT_PALLADIO} PRIVATE -Wno-stringop-overread -Wno-free-nonheap-object)
+    target_link_options(${TGT_PALLADIO} PRIVATE -Wno-stringop-overread -Wno-free-nonheap-object)
+
     set_target_properties(${TGT_PALLADIO} PROPERTIES
             INSTALL_RPATH "\$ORIGIN/../packages/palladio"
             INSTALL_RPATH_USE_LINK_PATH FALSE
