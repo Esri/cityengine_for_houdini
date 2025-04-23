@@ -17,7 +17,6 @@
 #include "MultiWatch.h"
 #include "LogHandler.h"
 
-#include <algorithm>
 #include <cmath>
 #include <iomanip>
 #include <mutex>

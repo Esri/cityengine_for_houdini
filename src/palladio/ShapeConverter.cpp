@@ -15,7 +15,6 @@
  */
 
 #include "ShapeConverter.h"
-#include "AttributeConversion.h"
 #include "HoleConverter.h"
 #include "LogHandler.h"
 #include "MultiWatch.h"
@@ -30,7 +29,6 @@
 #include "UT/UT_String.h"
 
 #include <numeric>
-#include <set>
 #include <variant>
 #include <vector>
 

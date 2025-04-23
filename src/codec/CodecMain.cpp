@@ -19,7 +19,6 @@
 #include "encoder/HoudiniEncoder.h"
 
 #include "prtx/ExtensionManager.h"
-#include "prtx/prtx.h"
 
 namespace {
 const int VERSION_MAJOR = PRT_VERSION_MAJOR;

@@ -31,6 +31,7 @@
 
 #include <algorithm>
 #include <filesystem>
+#include <memory>
 
 namespace {
 

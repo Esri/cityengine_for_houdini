@@ -26,6 +26,7 @@
 
 #include <algorithm>
 #include <future>
+#include <memory>
 
 namespace {
 

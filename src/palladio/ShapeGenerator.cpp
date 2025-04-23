@@ -19,7 +19,6 @@
 #include "LogHandler.h"
 #include "MultiWatch.h"
 #include "PrimitiveClassifier.h"
-#include "PrimitivePartition.h"
 #include "ShapeData.h"
 
 #include "GEO/GEO_Primitive.h"
