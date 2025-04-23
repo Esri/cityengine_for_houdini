@@ -195,7 +195,7 @@ AnnotationParsing::AnnotationTraitParameter getGenericAnnotation(const prt::Anno
 		case AnnotationParsing::AttributeTrait::DESCRIPTION:
 			return AnnotationParsing::parseDescriptionAnnotation(annotation);
 		default:
-			return AnnotationParsing::AnnotationTraitParameter();
+			return {};
 	}
 }
 
