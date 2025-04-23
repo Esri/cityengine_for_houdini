@@ -940,7 +940,7 @@ void SOPAssign::updateDefaultCGAAttributes(const ShapeData& shapeData) {
 					std::vector<double> doubleVec;
 					doubleVec.reserve(arr_length);
 
-					for (short enumIndex = 0; enumIndex < arr_length; enumIndex++)
+					for (size_t enumIndex = 0; enumIndex < arr_length; enumIndex++)
 						doubleVec.emplace_back(doubleArray[enumIndex]);
 
 					defVal = doubleVec;
@@ -952,7 +952,7 @@ void SOPAssign::updateDefaultCGAAttributes(const ShapeData& shapeData) {
 					std::vector<bool> boolVec;
 					boolVec.reserve(arr_length);
 
-					for (short enumIndex = 0; enumIndex < arr_length; enumIndex++)
+					for (size_t enumIndex = 0; enumIndex < arr_length; enumIndex++)
 						boolVec.emplace_back(boolArray[enumIndex]);
 
 					defVal = boolVec;
@@ -966,7 +966,7 @@ void SOPAssign::updateDefaultCGAAttributes(const ShapeData& shapeData) {
 					std::vector<std::wstring> stringVec;
 					stringVec.reserve(arr_length);
 
-					for (short enumIndex = 0; enumIndex < arr_length; enumIndex++)
+					for (size_t enumIndex = 0; enumIndex < arr_length; enumIndex++)
 						stringVec.emplace_back(stringArray[enumIndex]);
 
 					defVal = stringVec;
