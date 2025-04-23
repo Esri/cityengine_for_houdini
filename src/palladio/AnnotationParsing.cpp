@@ -147,17 +147,17 @@ EnumAnnotation parseEnumAnnotation(const prt::Annotation& annotation) {
 		switch (annotation.getArgument(arg)->getType()) {
 			case prt::AAT_BOOL: {
 				const bool val = annotation.getArgument(arg)->getBool();
-				enumAttribute.mOptions.push_back(std::to_wstring(val).c_str());
+				enumAttribute.mOptions.emplace_back(std::to_wstring(val));
 				break;
 			}
 			case prt::AAT_FLOAT: {
 				const double val = annotation.getArgument(arg)->getFloat();
-				enumAttribute.mOptions.push_back(std::to_wstring(val).c_str());
+				enumAttribute.mOptions.emplace_back(std::to_wstring(val));
 				break;
 			}
 			case prt::AAT_STR: {
 				const wchar_t* val = annotation.getArgument(arg)->getStr();
-				enumAttribute.mOptions.push_back(val);
+				enumAttribute.mOptions.emplace_back(val);
 				break;
 			}
 			default:
@@ -173,7 +173,7 @@ FileAnnotation parseFileAnnotation(const prt::Annotation& annotation) {
 		auto arg = annotation.getArgument(argIdx);
 
 		if (arg->getType() == prt::AAT_STR) {
-			fileAnnotation.push_back(arg->getStr());
+			fileAnnotation.emplace_back(arg->getStr());
 		}
 	}
 	return fileAnnotation;
