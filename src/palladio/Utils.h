@@ -26,6 +26,7 @@
 #include "prt/ResolveMap.h"
 #include "prt/RuleFileInfo.h"
 
+#include <algorithm>
 #include <filesystem>
 #include <memory>
 #include <optional>
@@ -101,11 +102,7 @@ inline void replace_all_not_of(std::wstring& s, const std::wstring& allowedChars
 }
 
 inline bool startsWithAnyOf(const std::string& s, const std::vector<std::string>& sv) {
-	for (const auto& v : sv) {
-		if (s.find(v) == 0)
-			return true;
-	}
-	return false;
+	return std::any_of(sv.begin(), sv.end(), [&s](std::string const& v) { return (s.find(v) == 0); });
 }
 
 PLD_TEST_EXPORTS_API std::wstring getFileExtensionString(const std::vector<std::wstring>& extensions);
