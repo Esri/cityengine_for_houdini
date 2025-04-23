@@ -29,7 +29,7 @@ public:
 
 	lru_cache(size_t capacity) : m_capacity(capacity) {}
 
-	~lru_cache() {}
+	~lru_cache() = default;
 
 	size_t size() const {
 		return m_map.size();
