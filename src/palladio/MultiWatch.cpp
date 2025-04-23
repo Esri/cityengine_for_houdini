@@ -36,7 +36,7 @@ MultiWatch::MultiWatch() {
 
 void MultiWatch::newLap() {
 	std::lock_guard<std::mutex> guard(watchMutex);
-	laps.emplace_back(Lap());
+	laps.emplace_back();
 }
 
 void MultiWatch::start(const std::string& name) {
