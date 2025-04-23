@@ -211,7 +211,7 @@ std::array<double, 3> getCentroid(const std::vector<double>& coords, const Conve
 }
 
 // try to get random seed from incoming primitive attributes (important for default rule attr eval)
-// use centroid based hash as fallback
+// use centroid-based hash as fallback
 int32_t getRandomSeed(const GA_Detail* detail, const GA_Offset& primOffset, const std::vector<double>& coords,
                       const ConversionHelper& ch) {
 	int32_t randomSeed = 0;
