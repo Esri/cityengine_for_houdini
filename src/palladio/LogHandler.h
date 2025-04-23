@@ -145,15 +145,15 @@ using LT = PRTLogger<L>;
 
 } // namespace logging
 
-using _LOG_DBG = logging::LT<prt::LOG_DEBUG>;
-using _LOG_INF = logging::LT<prt::LOG_INFO>;
-using _LOG_WRN = logging::LT<prt::LOG_WARNING>;
-using _LOG_ERR = logging::LT<prt::LOG_ERROR>;
-using _LOG_FTL = logging::LT<prt::LOG_FATAL>;
+using LOG_DBG_t = logging::LT<prt::LOG_DEBUG>;
+using LOG_INF_t = logging::LT<prt::LOG_INFO>;
+using LOG_WRN_t = logging::LT<prt::LOG_WARNING>;
+using LOG_ERR_t = logging::LT<prt::LOG_ERROR>;
+using LOG_FTL_t = logging::LT<prt::LOG_FATAL>;
 
 // convenience shortcuts in global namespace
-#define LOG_DBG _LOG_DBG() << __FUNCTION__ << ": "
-#define LOG_INF _LOG_INF()
-#define LOG_WRN _LOG_WRN()
-#define LOG_ERR _LOG_ERR()
-#define LOG_FTL _LOG_FTL()
+#define LOG_DBG LOG_DBG_t() << __FUNCTION__ << ": "
+#define LOG_INF LOG_INF_t()
+#define LOG_WRN LOG_WRN_t()
+#define LOG_ERR LOG_ERR_t()
+#define LOG_FTL LOG_FTL_t()
