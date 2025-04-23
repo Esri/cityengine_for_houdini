@@ -342,9 +342,9 @@ TEST_CASE("serialize basic mesh") {
 	CHECK(sg.coords == vtx);
 	CHECK(sg.vertexIndices == vtxIndRev); // reverses winding
 
-	CHECK(sg.uvs.size() == 0);
-	CHECK(sg.uvCounts.size() == 0);
-	CHECK(sg.uvIndices.size() == 0);
+	CHECK(sg.uvs.empty());
+	CHECK(sg.uvCounts.empty());
+	CHECK(sg.uvIndices.empty());
 }
 
 TEST_CASE("serialize mesh with one uv set") {
