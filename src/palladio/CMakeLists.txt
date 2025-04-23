@@ -44,6 +44,10 @@ if (PLD_TEST)
 endif ()
 
 if (PLD_LINUX)
+    # suppress GCC warnings triggered within HDK
+    target_compile_options(${TGT_PALLADIO} PRIVATE -Wno-stringop-overread -Wno-free-nonheap-object)
+    target_link_options(${TGT_PALLADIO} PRIVATE -Wno-stringop-overread -Wno-free-nonheap-object)
+
     set_target_properties(${TGT_PALLADIO} PROPERTIES
             INSTALL_RPATH "\$ORIGIN/../packages/palladio"
             INSTALL_RPATH_USE_LINK_PATH FALSE
