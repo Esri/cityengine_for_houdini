@@ -1,14 +1,14 @@
-# ![](doc/img/Palladio_icon_v1_32.png) Palladio - CityEngine Plugin for Houdini
+# ![](doc/img/Palladio_icon_v1_32.png) ArcGIS CityEngine for Houdini
 
-Palladio is a plugin for [SideFX Houdini](https://www.sidefx.com). It provides operator nodes which enable the execution of [CityEngine](https://www.esri.com/software/cityengine) ‘rules’ within Houdini networks. Therefore, a 3D environment artist does not have to leave their familiar Houdini toolset anymore to make use of CityEngine’s procedural modeling power. Complicated export-import pipelines are no longer needed, which also means that the procedural building models do not need to be “baked” anymore. The buildings stay procedural during the entire modeling workflow (optionally even at render time). Consequently, the 3D environment artist can change the height, style and appearance of buildings easily with a parametric interface at any point during production.
+ArcGIS CityEngine for Houdini is a plugin for [SideFX Houdini](https://www.sidefx.com). It provides operator nodes which enable the execution of [CityEngine](https://www.esri.com/software/cityengine) ‘rules’ within Houdini networks. Therefore, a 3D environment artist does not have to leave their familiar Houdini toolset anymore to make use of CityEngine’s procedural modeling power. Complicated export-import pipelines are no longer needed, which also means that the procedural building models do not need to be “baked” anymore. The buildings stay procedural during the entire modeling workflow (optionally even at render time). Consequently, the 3D environment artist can change the height, style and appearance of buildings easily with a parametric interface at any point during production.
 
-Palladio requires so-called rule packages (RPK) as input, which are authored in CityEngine. An RPK includes assets and a CGA rule file which encodes an architectural style. Comprehensive RPK examples are available below and can be used “out-of-the-box” in Palladio.
+CityEngine for Houdini requires so-called rule packages (RPK) as input, which are authored in CityEngine. An RPK includes assets and a CGA rule file which encodes an architectural style. Comprehensive RPK examples are available below and can be used “out-of-the-box”.
 
-Palladio is well suited for managing the procedural generation of architectural 3D content in digital sets. However, Palladio is restricted to the procedural generation of single buildings / objects. Palladio does not include the city layouting and street network editing tools of CityEngine i.e. the rich CityEngine toolset to design a city from scratch (or based on geographic data) is still needed.
+CityEngine for Houdini is well suited for managing the procedural generation of architectural 3D content in digital sets. However, it is restricted to the procedural generation of single buildings / objects. CityEngine for Houdini does not include the city layouting and street network editing tools of CityEngine i.e. the rich CityEngine toolset to design a city from scratch (or based on geographic data) is still needed.
 
 ## Quick Start
 
-1. Download the latest Palladio binary from the [release page](https://github.com/esri/palladio/releases).
+1. Download the latest CityEngine for Houdini binary from the [release page](https://github.com/esri/cityengine_for_houdini/releases).
 1. Extract the archive into your `<home>\Documents\houdiniX.Y` (Windows) or `<home>/houdiniX.Y` (Linux) directory, so that the files end up in the corresponding `config`, `dso` and `packages` sub-directories.
 1. Start Houdini and you will find the new `pldAssign` and `pldGenerate` nodes in the OBJ operator menu under `custom`.
 1. In Houdini, create a quad as initial shape by setting up a `grid` node with 2 cols/rows.
@@ -24,7 +24,7 @@ Palladio is well suited for managing the procedural generation of architectural 
 ## Table of Contents
 
 - [User Manual](#user-manual)
-- [Downloads](https://github.com/Esri/palladio/releases)
+- [Downloads](https://github.com/esri/cityengine_for_houdini/releases)
 - [Examples](https://esri.github.io/cityengine/palladio#examples)
 - [Developer Manual](#developer-manual)
 - [Release Notes](#release-notes)
@@ -53,7 +53,7 @@ Please refer to the [release notes](#release-notes) for the supported CityEngine
 
 #### From Pre-Built Binaries
 
-1. Download the latest Palladio binary from the [release page](https://github.com/esri/palladio/releases).
+1. Download the latest CityEngine for Houdini binary from the [release page](https://github.com/esri/cityengine_for_houdini/releases).
 1. Extract the archive into your `<home>\Documents\houdiniX.Y` (Windows) or `<home>/houdiniX.Y` (Linux) directory, so that the files end up in the `config`, `dso` and `packages` sub-directories.
 1. Start Houdini and you will find the new `pldAssign` and `pldGenerate` nodes in the OBJ operator menu under `custom`.
 
@@ -61,12 +61,12 @@ Note: it is NOT necessary to modify the system `PATH` environment variable.
 
 #### From Source
 
-1. [Build](#developer-manual) Palladio
-1. The `install` step should automatically copy all required files into your `<home>\Documents\houdiniX.Y` (Windows) or `<home>/houdiniX.Y` (Linux) directory and Palladio is ready to run.
+1. [Build](#developer-manual) CityEngine for Houdini
+1. The `install` step should automatically copy all required files into your `<home>\Documents\houdiniX.Y` (Windows) or `<home>/houdiniX.Y` (Linux) directory and CityEngine for Houdini is ready to run.
 
-### Using Palladio
+### Using CityEngine for Houdini
 
-Palladio adds the two new geometry (SOP) nodes `pldAssign` and `pldGenerate` to Houdini in the 'Custom' category. These can be created inside of any geometry object in the `Network Editor`.
+CityEngine for Houdini adds the two new geometry (SOP) nodes `pldAssign` and `pldGenerate` to Houdini in the 'Custom' category. These can be created inside of any geometry object in the `Network Editor`.
 
 #### pldAssign Node
 
@@ -82,7 +82,7 @@ The `pldGenerate` node is used to generate the final geometry. It takes an initi
 - Re-emit modified CGA attributes (off by default)
 - Emit material attributes (off by default)
 - Emit CGA reports (off by default)
-- Triangulate polygons with holes (on by default). If disabled, Palladio will create "holes with bridges" similar to the [Hole](https://www.sidefx.com/docs/houdini/nodes/sop/hole.html) geometry node.
+- Triangulate polygons with holes (on by default). If disabled, CityEngine for Houdini will create "holes with bridges" similar to the [Hole](https://www.sidefx.com/docs/houdini/nodes/sop/hole.html) geometry node.
 
 ### Execute a simple CityEngine Rule
 
@@ -99,7 +99,7 @@ The `pldGenerate` node is used to generate the final geometry. It takes an initi
    (Instead you can also directly use [this](doc/data/heightExtrude.rpk) RPK)
 
 1. In Houdini, in a new scene, add a `grid` node.
-1. Enter the `grid` node, set the `Rows` and `Columns` parameters to two and add the two Palladio nodes `pldAssign` and `pldGenerate`. Connect them like this:
+1. Enter the `grid` node, set the `Rows` and `Columns` parameters to two and add the two CityEngine for Houdini nodes `pldAssign` and `pldGenerate`. Connect them like this:
 
    ![](doc/img/extrude01.png)
 
@@ -159,7 +159,7 @@ In this section, we are going to connect a material attribute generated by `pldG
 
 #### Using provided HDA
 
-1. Download the ready-made Houdini Digital Asset with a [CityEngine Material for Mantra](https://github.com/Esri/palladio/releases/download/v1.6.1/PalladioCityEngineMaterial-v2.hdanc).
+1. Download the ready-made Houdini Digital Asset with a [CityEngine Material for Mantra](https://github.com/esri/cityengine_for_houdini/releases/download/v1.6.1/PalladioCityEngineMaterial-v2.hdanc).
 1. Import the HDA to your current project (`File`>`Import`>`Houdini Digital Asset`) and click install.
 1. Select the `pldGenerate` node and check the `Emit material attributes` check box. Open the spreadsheet to observe a number of material primitive attributes now being emitted by `pldGenerate`.
 1. Create a new PalladioCityEngineMaterial node and connect it to the `pldGenerate` node. Make it the active render node.
@@ -208,7 +208,7 @@ In this section, we are going to connect a material attribute generated by `pldG
 
 ### Tips and Tricks
 
-#### How to export an Alembic from CityEngine as input to Palladio
+#### How to export an Alembic from CityEngine as input to CityEngine for Houdini
 
 This short CityEngine guide explains how to include the random seed and start rule assignments when exporting input geometry to Alembic.
 
@@ -286,24 +286,24 @@ Default is Houdini 20.5. See below how to build for different Houdini versions.
 
 #### Bootstrap
 
-The below steps will populate your local Conan repository with dependencies for the Palladio build system. You only need to work through this section once (or if you want to upgrade one of the dependencies).
+The below steps will populate your local Conan repository with dependencies for the CityEngine for Houdini build system. You only need to work through this section once (or if you want to upgrade one of the dependencies).
 
 ##### Linux
 
-1. Checkout Palladio: `git clone git@github.com:esri/palladio.git && cd palladio`
+1. Checkout CityEngine for Houdini: `git clone git@github.com:esri/cityengine_for_houdini.git && cd palladio`
 1. Download CityEngine SDK: `conan create -pr conan/profiles/linux-gcc112 conan/cesdk cesdk/3.2.10650@esri-rd-zurich/stable`
 1. Extract and package the HDK from your local Houdini 20.5 installation (adjust Z to your Houdini version): `conan create -pr conan/profiles/linux-gcc112 conan/houdini houdini/20.5.Z@sidefx/stable` (Note: use the option `-e HOUDINI_INSTALL=/path/to/your/hfs20.5.Z`, if Houdini is not installed at the standard location, e.g. at `/opt/hfs20.5.Z` for Linux).
 
 ##### Windows
 
-1. Checkout Palladio: `git clone git@github.com:esri/palladio.git`
-1. Open a Windows command shell and `cd` to the Palladio git repository
+1. Checkout CityEngine for Houdini: `git clone git@github.com:esri/cityengine_for_houdini.git`
+1. Open a Windows command shell and `cd` to the CityEngine for Houdini git repository
 1. Download CityEngine SDK: `conan create -pr conan/profiles/windows-v143 conan/cesdk cesdk/3.2.10650@esri-rd-zurich/stable`
 1. Extract and package the HDK from your local Houdini installation (adjust Z to your Houdini version): `conan create -pr conan/profiles/windows-v143 conan/houdini houdini/20.5.Z@sidefx/stable` (Note: use the option `-e HOUDINI_INSTALL=C:/path/to/your/houdini/installation`, if Houdini is not installed at the standard location for Windows).
 
 ##### Docker Toolchain Images
 
-This repo includes Dockerfiles for Linux/Windows toolchain images. Run the following commands in the Palladio repo root:
+This repo includes Dockerfiles for Linux/Windows toolchain images. Run the following commands in the CityEngine for Houdini repo root:
 - Linux: `docker build -t palladio-tc -f docker/linux/Dockerfile --build-context houdini=<path to Houdini installation X.Y.Z> --build-arg HOUDINI_VERSION=X.Y.Z .`
 - Windows (note, there is also the `build.py` helper script for the below):
   ```
@@ -311,41 +311,41 @@ This repo includes Dockerfiles for Linux/Windows toolchain images. Run the follo
   docker build -t palladio-tc -f docker/windows/Dockerfile-houdini --build-arg HOUDINI_VERSION=X.Y.Z 'C:/Program Files/Side Effects Software/Houdini X.Y.Z'
   ```
 
-#### Building Palladio
+#### Building CityEngine for Houdini
 
 Note: to build for another Houdini version, add the cmake argument `-DPLD_HOUDINI_VERSION=X.Y`.
 
 ##### Linux
 
 1. Ensure GCC 11.2 is active.
-1. `cd` into your Palladio git repository
+1. `cd` into your CityEngine for Houdini git repository
 1. `mkdir -p build/release && cd build/release`
 1. `cmake -DCMAKE_BUILD_TYPE=Release ../../src`
 1. `make install` (the plugin will be installed into your `~/houdini20.5/dso` directory)
 
 ##### Windows
 
-1. Open a MSVC 14.37 x64 shell (Visual Studio 2022) and `cd` to the Palladio git repository
+1. Open a MSVC 14.37 x64 shell (Visual Studio 2022) and `cd` to the CityEngine for Houdini git repository
 1. `mkdir build/release`
 1. `cd build/release`
 1. `cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ../../src`
 1. `nmake install` (the plugin will be installed into your `%USERPROFILE%/Documents/houdini20.5/dso` directory)
 
-#### Debugging Palladio
+#### Debugging CityEngine for Houdini
 
 For the best debugging UX, please use the build type `RelWithDebInfo` when running CMake (or in Visual Studio).
-The `Debug` mode does not work as it will result in incompatible ABI between Houdini, PRT and the Palladio client code.
+The `Debug` mode does not work as it will result in incompatible ABI between Houdini, PRT and the CityEngine for Houdini client code.
 
-### Running Palladio
+### Running CityEngine for Houdini
 
-See [Quick Start](#quick-start) how to launch Houdini with Palladio.
+See [Quick Start](#quick-start) how to launch Houdini with CityEngine for Houdini.
 
 ### Building and Running Unit Tests
 
 #### Linux
 
 1. Ensure GCC 11.2 is active.
-1. `cd` into your Palladio git repository
+1. `cd` into your CityEngine for Houdini git repository
 1. `mkdir -p build/relTest && cd build/relTest`
 1. `cmake -DCMAKE_BUILD_TYPE=Release -DPLD_TEST=1 ../../src`
 1. `make palladio_test`
@@ -353,7 +353,7 @@ See [Quick Start](#quick-start) how to launch Houdini with Palladio.
 
 #### Windows
 
-1. Open a MSVC 14.37 x64 shell (Visual Studio 2022) and `cd` to the Palladio git repository
+1. Open a MSVC 14.37 x64 shell (Visual Studio 2022) and `cd` to the CityEngine for Houdini git repository
 1. `mkdir build/relTest`
 1. `cd build/relTest`
 1. `cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DPLD_TEST=1 ../../src`
@@ -373,6 +373,7 @@ See [Quick Start](#quick-start) how to launch Houdini with Palladio.
 #### Changed:
 
 - Updated Procedural Runtime (PRT) to 3.2.10650 (corresponds to CityEngine 2024.1) 
+- Renamed Palladio to "ArcGIS CityEngine for Houdini"
 
 #### Removed:
 
@@ -637,7 +638,7 @@ Required CityEngine version: 2022.0 or older
 
 ## Community
 
-Palladio is maintained as an open-source project by Matthias Buehler ([vrbn studios](https://www.vrbn.io)) and Simon Haegler (Esri R&D Zurich). Matthias is focusing on UX/UI topics and use-cases, while Simon is focusing on the implementation and procedural modelling technology.
+CityEngine for Houdini is maintained as an open-source project by Matthias Buehler ([vrbn studios](https://www.vrbn.io)) and Simon Haegler (Esri R&D Zurich). Matthias is focusing on UX/UI topics and use-cases, while Simon is focusing on the implementation and procedural modelling technology.
 
 Our goal is to bring as many Houdini and CityEngine users and developers on board as possible. Anyone is invited to submit issues and/or to fork and contribute to this project.
 
@@ -647,13 +648,13 @@ Our thanks also go to the fine folks at Esri R&D Zurich and vrbn studios which p
 
 ## History
 
-Palladio has been invented by Matthias Buehler and Simon Haegler in early 2015. It started out as a research project at Esri R&D Zurich to get to a tighter integration of CityEngine and Houdini than just via file-based import/export of assets. Early results were promising, so we slowly cooked the project to v1.0 in our spare time. In December 2017, we decided to open-source Palladio with an Apache 2.0 license.
+CityEngine for Houdini has been invented by Matthias Buehler and Simon Haegler in early 2015. It started out as a research project at Esri R&D Zurich to get to a tighter integration of CityEngine and Houdini than just via file-based import/export of assets. Early results were promising, so we slowly cooked the project to v1.0 in our spare time. In December 2017, we decided to open-source CityEngine for Houdini with an Apache 2.0 license.
 
 ## Licensing Information
 
-Palladio is free for personal, educational, and non-commercial use. Commercial use requires at least one commercial license of the latest CityEngine version installed in the organization. Redistribution or web service offerings are not allowed unless expressly permitted.
+ArcGIS CityEngine for Houdini is free for personal, educational, and non-commercial use. Commercial use requires at least one commercial license of the latest CityEngine version installed in the organization. Redistribution or web service offerings are not allowed unless expressly permitted.
 
-Palladio is under the same license as the included [CityEngine SDK](https://github.com/esri/cityengine-sdk#licensing). An exception is the Palladio source code (without CityEngine SDK, binaries, or object code), which is licensed under the Apache License, Version 2.0 (the “License”); you may not use this work except in compliance with the License. You may obtain a copy of the License at https://www.apache.org/licenses/LICENSE-2.0.
+CityEngine for Houdini is under the same license as the included [CityEngine SDK](https://github.com/esri/cityengine-sdk#licensing). An exception is the CityEngine for Houdini source code (without CityEngine SDK, binaries, or object code), which is licensed under the Apache License, Version 2.0 (the “License”); you may not use this work except in compliance with the License. You may obtain a copy of the License at https://www.apache.org/licenses/LICENSE-2.0.
 
 All content in the "Examples" directory/section is licensed under the APACHE 2.0 license as well.
 

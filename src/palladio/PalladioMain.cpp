@@ -57,5 +57,5 @@ void newSopOperator(OP_OperatorTable* table) {
 	table->addOperator(new OP_Operator(OP_PLD_GENERATE, OP_PLD_GENERATE, createSOPGenerate,
 	                                   GenerateNodeParams::PARAM_TEMPLATES, 1, 1, nullptr, OP_FLAG_GENERATOR));
 
-	LOG_INF << "Palladio " << PLD_VERSION << " initialized.";
+	LOG_INF << "CityEngine for Houdini " << PLD_VERSION << " initialized.";
 }

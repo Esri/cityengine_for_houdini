@@ -23,5 +23,5 @@ void installFSHelpers() {
 	rpkReader = std::make_unique<RulePackageReader>(prtCache.get());
 	rpkInfoHelper = std::make_unique<RulePackageInfoHelper>(prtCache.get());
 
-	std::clog << "Palladio: Registered custom FS reader for Rule Packages.\n";
+	std::clog << "CityEngine for Houdini: Registered custom FS reader for Rule Packages.\n";
 }
