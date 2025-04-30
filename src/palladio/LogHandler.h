@@ -114,17 +114,17 @@ class LogHandler : public prt::LogHandler {
 public:
 	LogHandler(const std::wstring& name) : mName(name) {}
 
-	virtual void handleLogEvent(const wchar_t* msg, prt::LogLevel level) override {
+	void handleLogEvent(const wchar_t* msg, prt::LogLevel level) override {
 		// probably not the best idea - is there a houdini logging framework?
 		std::wcout << L"[" << mName << L"] " << msg << std::endl;
 	}
 
-	virtual const prt::LogLevel* getLevels(size_t* count) override {
+	const prt::LogLevel* getLevels(size_t* count) override {
 		*count = prt::LogHandler::ALL_COUNT;
 		return prt::LogHandler::ALL;
 	}
 
-	virtual void getFormat(bool* dateTime, bool* level) override {
+	void getFormat(bool* dateTime, bool* level) override {
 		*dateTime = true;
 		*level = true;
 	}

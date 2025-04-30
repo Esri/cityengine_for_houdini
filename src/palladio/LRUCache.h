@@ -62,7 +62,7 @@ public:
 		}
 	}
 
-	std::optional<value_type> get(const key_type& key) {
+	virtual std::optional<value_type> get(const key_type& key) {
 		// lookup value in the mCache
 		typename map_type::iterator i = m_map.find(key);
 		if (i == m_map.end()) {
@@ -157,7 +157,7 @@ public:
 		Base::insert(key, value);
 	}
 
-	std::optional<V> get(const K& key) {
+	std::optional<V> get(const K& key) override {
 		std::lock_guard<std::mutex> guard(mMutex);
 		auto v = Base::get(key);
 

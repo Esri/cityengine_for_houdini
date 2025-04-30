@@ -879,16 +879,16 @@ TEST_CASE("generate without polygon hole triangulation") {
 
 TEST_CASE("convert initial shape holes") {
 	struct TestSource : HoleConverter::EdgeSource {
-		virtual HoleConverter::Edges getEdges() const override {
+		HoleConverter::Edges getEdges() const override {
 			return {{0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 0}};
 		}
 
-		virtual int64_t getPointIndex(int64_t vertexIndex) const override {
+		int64_t getPointIndex(int64_t vertexIndex) const override {
 			static std::vector<int64_t> V2P = {4, 5, 7, 6, 2, 3, 1, 0, 2, 6};
 			return V2P[vertexIndex];
 		}
 
-		virtual bool isBridge(int64_t pointIndexA, int64_t pointIndexB) const override {
+		bool isBridge(int64_t pointIndexA, int64_t pointIndexB) const override {
 			return (pointIndexA == 2 && pointIndexB == 6) || (pointIndexA == 6 && pointIndexB == 2);
 		}
 	};
@@ -901,7 +901,7 @@ TEST_CASE("convert initial shape holes") {
 
 	SECTION("no bridges") {
 		struct NoBridgesTestSource : TestSource {
-			virtual bool isBridge(int64_t pointIndexA, int64_t pointIndexB) const override {
+			bool isBridge(int64_t pointIndexA, int64_t pointIndexB) const override {
 				return false;
 			}
 		};
@@ -912,7 +912,7 @@ TEST_CASE("convert initial shape holes") {
 
 	SECTION("empty") {
 		struct EmptyTestSource : TestSource {
-			virtual HoleConverter::Edges getEdges() const override {
+			HoleConverter::Edges getEdges() const override {
 				return {};
 			}
 		};
