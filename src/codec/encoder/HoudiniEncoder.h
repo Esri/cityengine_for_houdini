@@ -87,12 +87,12 @@ private:
 
 class HoudiniEncoderFactory : public prtx::EncoderFactory, public prtx::Singleton<HoudiniEncoderFactory> {
 public:
-	static HoudiniEncoderFactory* createInstance();
+	[[nodiscard]] static HoudiniEncoderFactory* createInstance();
 
 	explicit HoudiniEncoderFactory(const prt::EncoderInfo* info) : prtx::EncoderFactory(info) {}
 	~HoudiniEncoderFactory() override = default;
 
-	HoudiniEncoder* create(const prt::AttributeMap* options, prt::Callbacks* callbacks) const override {
+	[[nodiscard]] HoudiniEncoder* create(const prt::AttributeMap* options, prt::Callbacks* callbacks) const override {
 		return new HoudiniEncoder(getID(), options, callbacks);
 	}
 };

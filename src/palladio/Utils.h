@@ -62,8 +62,8 @@ PLD_TEST_EXPORTS_API std::vector<std::wstring> tokenizeAll(const std::wstring& i
 PLD_TEST_EXPORTS_API std::pair<std::wstring, std::wstring> tokenizeFirst(const std::wstring& input, wchar_t token);
 
 PLD_TEST_EXPORTS_API std::optional<std::pair<std::wstring, std::wstring>> getCGB(const ResolveMapSPtr& rm);
-PLD_TEST_EXPORTS_API const prt::AttributeMap* createValidatedOptions(const wchar_t* encID,
-                                                                     const prt::AttributeMap* unvalidatedOptions);
+PLD_TEST_EXPORTS_API [[nodiscard]] const prt::AttributeMap*
+createValidatedOptions(const wchar_t* encID, const prt::AttributeMap* unvalidatedOptions);
 PLD_TEST_EXPORTS_API std::string objectToXML(prt::Object const* obj);
 
 void getLibraryPath(std::filesystem::path& path, const void* func);
