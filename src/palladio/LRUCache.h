@@ -27,7 +27,7 @@ public:
 	typedef std::list<key_type> list_type;
 	typedef std::map<key_type, std::pair<value_type, typename list_type::iterator>> map_type;
 
-	lru_cache(size_t capacity) : m_capacity(capacity) {}
+	explicit lru_cache(size_t capacity) : m_capacity(capacity) {}
 
 	~lru_cache() = default;
 
@@ -143,7 +143,7 @@ private:
 #endif
 
 public:
-	LockedLRUCache(size_t capacity) : Base{capacity} {}
+	explicit LockedLRUCache(size_t capacity) : Base{capacity} {}
 
 	~LockedLRUCache() {
 #ifdef LOCKED_LRU_CACHE_STATS

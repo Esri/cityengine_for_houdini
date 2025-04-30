@@ -30,7 +30,7 @@
 
 class RulePackageReader : public FS_ReaderHelper {
 public:
-	RulePackageReader(prt::Cache* cache);
+	explicit RulePackageReader(prt::Cache* cache);
 	~RulePackageReader() override = default;
 
 	FS_ReaderStream* createStream(const char* source, const UT_Options* options) override;
@@ -47,7 +47,7 @@ using pld_time_t = int;
 
 class RulePackageInfoHelper : public FS_InfoHelper {
 public:
-	RulePackageInfoHelper(prt::Cache* cache);
+	explicit RulePackageInfoHelper(prt::Cache* cache);
 	~RulePackageInfoHelper() override = default;
 
 	bool canHandle(const char* source) override;

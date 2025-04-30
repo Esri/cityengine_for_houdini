@@ -53,7 +53,7 @@ const std::wstring WLEVELS[] = {L"trace", L"debug", L"info", L"warning", L"error
 // log to std streams
 template <prt::LogLevel L>
 struct StreamLogger : Logger {
-	StreamLogger(std::wostream& out = std::wcout) : Logger(), mOut(out) {
+	explicit StreamLogger(std::wostream& out = std::wcout) : Logger(), mOut(out) {
 		mOut << prefix();
 	}
 	virtual ~StreamLogger() {
@@ -112,7 +112,7 @@ struct PRTLogger : Logger {
 
 class LogHandler : public prt::LogHandler {
 public:
-	LogHandler(const std::wstring& name) : mName(name) {}
+	explicit LogHandler(const std::wstring& name) : mName(name) {}
 
 	void handleLogEvent(const wchar_t* msg, prt::LogLevel level) override {
 		// probably not the best idea - is there a houdini logging framework?

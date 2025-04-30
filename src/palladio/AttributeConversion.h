@@ -48,7 +48,7 @@ namespace AttributeConversion {
 
 class FromHoudini {
 public:
-	FromHoudini(prt::AttributeMapBuilder& builder) : mBuilder(builder) {}
+	explicit FromHoudini(prt::AttributeMapBuilder& builder) : mBuilder(builder) {}
 	FromHoudini(const FromHoudini&) = delete;
 	FromHoudini(FromHoudini&&) = delete;
 	FromHoudini& operator=(const FromHoudini&) = delete;
@@ -67,7 +67,7 @@ private:
 
 class ToHoudini {
 public:
-	ToHoudini(GU_Detail* detail) : mDetail(detail) {}
+	explicit ToHoudini(GU_Detail* detail) : mDetail(detail) {}
 	ToHoudini(const ToHoudini&) = delete;
 	ToHoudini(ToHoudini&&) = delete;
 	ToHoudini& operator=(const ToHoudini&) = delete;
