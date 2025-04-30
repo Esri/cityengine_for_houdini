@@ -199,7 +199,7 @@ AnnotationParsing::AnnotationTraitParameter getGenericAnnotation(const prt::Anno
 	}
 }
 
-ColorAnnotation parseColor(const std::wstring colorString) {
+ColorAnnotation parseColor(const std::wstring& colorString) {
 	ColorAnnotation color{0.0, 0.0, 0.0};
 	if (colorString.size() >= 7 && colorString[0] == '#') {
 		color[0] = static_cast<double>((fromHex(colorString[1]) << 4) + fromHex(colorString[2])) / 255.0;

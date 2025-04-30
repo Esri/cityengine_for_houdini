@@ -46,7 +46,7 @@ using ColorAnnotation = std::array<double, 3>;
 using AnnotationTraitParameter =
         std::variant<std::monostate, EnumAnnotation, RangeAnnotation, FileAnnotation, std::wstring>;
 
-ColorAnnotation parseColor(const std::wstring colorString);
+ColorAnnotation parseColor(const std::wstring& colorString);
 
 std::wstring getColorString(const std::array<float, 3>& rgb);
 

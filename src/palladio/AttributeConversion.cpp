@@ -291,7 +291,7 @@ bool FromHoudini::handleArray(const GA_ROAttributeRef& ar, const GA_Offset& offs
 	return conversionResult;
 }
 
-void ToHoudini::convert(const prt::AttributeMap* attrMap, const GA_Offset rangeStart, const GA_Size rangeSize,
+void ToHoudini::convert(const prt::AttributeMap* attrMap, const GA_Offset& rangeStart, const GA_Size& rangeSize,
                         ArrayHandling arrayHandling) {
 	const GA_IndexMap& primIndexMap = mDetail->getIndexMap(GA_ATTRIB_PRIMITIVE);
 	extractAttributeNames(attrMap);

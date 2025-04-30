@@ -75,7 +75,7 @@ public:
 	virtual ~ToHoudini() = default;
 
 	enum class ArrayHandling { TUPLE, ARRAY };
-	void convert(const prt::AttributeMap* attrMap, const GA_Offset rangeStart, const GA_Size rangeSize,
+	void convert(const prt::AttributeMap* attrMap, const GA_Offset& rangeStart, const GA_Size& rangeSize,
 	             ArrayHandling arrayHandling = ArrayHandling::TUPLE);
 
 private:

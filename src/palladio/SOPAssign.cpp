@@ -804,9 +804,9 @@ AnnotationParsing::RangeAnnotation getRange(const AnnotationParsing::TraitParame
 	return AnnotationParsing::RangeAnnotation({minMax, restricted});
 };
 
-bool tryHandleEnum(SOPAssign* node, const std::wstring attrId, const std::wstring attrName, std::wstring defaultValue,
+bool tryHandleEnum(SOPAssign* node, const std::wstring& attrId, const std::wstring& attrName, const std::wstring& defaultValue,
                    prt::AnnotationArgumentType enumType, const AnnotationParsing::TraitParameterMap& traitParmMap,
-                   const std::wstring& description, std::vector<std::wstring> parentFolders) {
+                   const std::wstring& description, const std::vector<std::wstring>& parentFolders) {
 	const auto& enumIt = traitParmMap.find(AnnotationParsing::AttributeTrait::ENUM);
 	if (enumIt == traitParmMap.end())
 		return false;
@@ -829,9 +829,9 @@ bool tryHandleEnum(SOPAssign* node, const std::wstring attrId, const std::wstrin
 	return true;
 }
 
-bool tryHandleRange(SOPAssign* node, const std::wstring attrId, const std::wstring attrName, double defaultValue,
+bool tryHandleRange(SOPAssign* node, const std::wstring& attrId, const std::wstring& attrName, double defaultValue,
                     const AnnotationParsing::TraitParameterMap& traitParmMap, const std::wstring& description,
-                    std::vector<std::wstring> parentFolders) {
+                    const std::vector<std::wstring>& parentFolders) {
 	const bool isAngle = (traitParmMap.find(AnnotationParsing::AttributeTrait::ANGLE) != traitParmMap.end());
 	const bool isPercent = (traitParmMap.find(AnnotationParsing::AttributeTrait::PERCENT) != traitParmMap.end());
 	const bool isRange = (traitParmMap.find(AnnotationParsing::AttributeTrait::RANGE) != traitParmMap.end());
@@ -857,9 +857,9 @@ bool tryHandleRange(SOPAssign* node, const std::wstring attrId, const std::wstri
 	return true;
 }
 
-bool tryHandleFile(SOPAssign* node, const std::wstring attrId, const std::wstring attrName, std::wstring defaultValue,
+bool tryHandleFile(SOPAssign* node, const std::wstring& attrId, const std::wstring& attrName, const std::wstring& defaultValue,
                    const AnnotationParsing::TraitParameterMap& traitParmMap, const std::wstring& description,
-                   std::vector<std::wstring> parentFolders) {
+                   const std::vector<std::wstring>& parentFolders) {
 	const auto& fileIt = traitParmMap.find(AnnotationParsing::AttributeTrait::FILE);
 	if (fileIt == traitParmMap.end())
 		return false;
@@ -870,9 +870,9 @@ bool tryHandleFile(SOPAssign* node, const std::wstring attrId, const std::wstrin
 	return true;
 }
 
-bool tryHandleDir(SOPAssign* node, const std::wstring attrId, const std::wstring attrName, std::wstring defaultValue,
+bool tryHandleDir(SOPAssign* node, const std::wstring& attrId, const std::wstring& attrName, const std::wstring& defaultValue,
                   const AnnotationParsing::TraitParameterMap& traitParmMap, const std::wstring& description,
-                  std::vector<std::wstring> parentFolders) {
+                  const std::vector<std::wstring>& parentFolders) {
 	const auto& dirIt = traitParmMap.find(AnnotationParsing::AttributeTrait::DIR);
 	if (dirIt == traitParmMap.end())
 		return false;
@@ -881,9 +881,9 @@ bool tryHandleDir(SOPAssign* node, const std::wstring attrId, const std::wstring
 	return true;
 }
 
-bool tryHandleColor(SOPAssign* node, const std::wstring attrId, const std::wstring attrName, std::wstring defaultValue,
+bool tryHandleColor(SOPAssign* node, const std::wstring& attrId, const std::wstring& attrName, const std::wstring& defaultValue,
                     const AnnotationParsing::TraitParameterMap& traitParmMap, const std::wstring& description,
-                    std::vector<std::wstring> parentFolders) {
+                    const std::vector<std::wstring>& parentFolders) {
 	const auto& colorIt = traitParmMap.find(AnnotationParsing::AttributeTrait::COLOR);
 	if (colorIt == traitParmMap.end())
 		return false;
