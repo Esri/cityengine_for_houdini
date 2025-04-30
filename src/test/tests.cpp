@@ -90,7 +90,7 @@ TEST_CASE("replace chars not in set", "[utils]") {
 	}
 
 	SECTION("empty") {
-		std::wstring s = L"";
+		std::wstring s;
 		replace_all_not_of(s, ac);
 		CHECK(s == L"");
 	}
