@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 #include "MultiWatch.h"
 #include "LogHandler.h"
 
-#include <algorithm>
 #include <cmath>
 #include <iomanip>
 #include <mutex>
@@ -37,7 +36,7 @@ MultiWatch::MultiWatch() {
 
 void MultiWatch::newLap() {
 	std::lock_guard<std::mutex> guard(watchMutex);
-	laps.emplace_back(Lap());
+	laps.emplace_back();
 }
 
 void MultiWatch::start(const std::string& name) {

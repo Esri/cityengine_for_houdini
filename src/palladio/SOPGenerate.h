@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public:
 	SOPGenerate(const PRTContextUPtr& pCtx, OP_Network* net, const char* name, OP_Operator* op);
 	~SOPGenerate() override = default;
 
-	void opChanged(OP_EventType reason, void* data = nullptr) override;
+	void opChanged(OP_EventType reason, void* data) override;
 
 protected:
 	OP_ERROR cookMySop(OP_Context& context) override;

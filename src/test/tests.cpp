@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@
 
 #include <algorithm>
 #include <filesystem>
+#include <memory>
 
 namespace {
 
@@ -49,7 +50,7 @@ void compareReversed(const std::vector<T>& a, const std::vector<T>& b) {
 int main(int argc, char* argv[]) {
 	assert(!prtCtx);
 	const std::vector<std::filesystem::path> addExtDirs = {TEST_RUN_PRT_EXT_DIR, TEST_RUN_CODEC_EXT_DIR};
-	prtCtx.reset(new PRTContext(addExtDirs));
+	prtCtx = std::make_unique<PRTContext>(addExtDirs);
 	int result = Catch::Session().run(argc, argv);
 	prtCtx.reset();
 	return result;
@@ -89,9 +90,9 @@ TEST_CASE("replace chars not in set", "[utils]") {
 	}
 
 	SECTION("empty") {
-		std::wstring s = L"";
+		std::wstring s;
 		replace_all_not_of(s, ac);
-		CHECK(s == L"");
+		CHECK(s.empty());
 	}
 
 	SECTION("one char") {
@@ -341,9 +342,9 @@ TEST_CASE("serialize basic mesh") {
 	CHECK(sg.coords == vtx);
 	CHECK(sg.vertexIndices == vtxIndRev); // reverses winding
 
-	CHECK(sg.uvs.size() == 0);
-	CHECK(sg.uvCounts.size() == 0);
-	CHECK(sg.uvIndices.size() == 0);
+	CHECK(sg.uvs.empty());
+	CHECK(sg.uvCounts.empty());
+	CHECK(sg.uvIndices.empty());
 }
 
 TEST_CASE("serialize mesh with one uv set") {
@@ -879,16 +880,16 @@ TEST_CASE("generate without polygon hole triangulation") {
 
 TEST_CASE("convert initial shape holes") {
 	struct TestSource : HoleConverter::EdgeSource {
-		virtual HoleConverter::Edges getEdges() const override {
+		HoleConverter::Edges getEdges() const override {
 			return {{0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 0}};
 		}
 
-		virtual int64_t getPointIndex(int64_t vertexIndex) const override {
+		int64_t getPointIndex(int64_t vertexIndex) const override {
 			static std::vector<int64_t> V2P = {4, 5, 7, 6, 2, 3, 1, 0, 2, 6};
 			return V2P[vertexIndex];
 		}
 
-		virtual bool isBridge(int64_t pointIndexA, int64_t pointIndexB) const override {
+		bool isBridge(int64_t pointIndexA, int64_t pointIndexB) const override {
 			return (pointIndexA == 2 && pointIndexB == 6) || (pointIndexA == 6 && pointIndexB == 2);
 		}
 	};
@@ -901,7 +902,7 @@ TEST_CASE("convert initial shape holes") {
 
 	SECTION("no bridges") {
 		struct NoBridgesTestSource : TestSource {
-			virtual bool isBridge(int64_t pointIndexA, int64_t pointIndexB) const override {
+			bool isBridge(int64_t pointIndexA, int64_t pointIndexB) const override {
 				return false;
 			}
 		};
@@ -912,7 +913,7 @@ TEST_CASE("convert initial shape holes") {
 
 	SECTION("empty") {
 		struct EmptyTestSource : TestSource {
-			virtual HoleConverter::Edges getEdges() const override {
+			HoleConverter::Edges getEdges() const override {
 				return {};
 			}
 		};

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ namespace AttributeConversion {
 
 class FromHoudini {
 public:
-	FromHoudini(prt::AttributeMapBuilder& builder) : mBuilder(builder) {}
+	explicit FromHoudini(prt::AttributeMapBuilder& builder) : mBuilder(builder) {}
 	FromHoudini(const FromHoudini&) = delete;
 	FromHoudini(FromHoudini&&) = delete;
 	FromHoudini& operator=(const FromHoudini&) = delete;
@@ -67,7 +67,7 @@ private:
 
 class ToHoudini {
 public:
-	ToHoudini(GU_Detail* detail) : mDetail(detail) {}
+	explicit ToHoudini(GU_Detail* detail) : mDetail(detail) {}
 	ToHoudini(const ToHoudini&) = delete;
 	ToHoudini(ToHoudini&&) = delete;
 	ToHoudini& operator=(const ToHoudini&) = delete;
@@ -75,7 +75,7 @@ public:
 	virtual ~ToHoudini() = default;
 
 	enum class ArrayHandling { TUPLE, ARRAY };
-	void convert(const prt::AttributeMap* attrMap, const GA_Offset rangeStart, const GA_Size rangeSize,
+	void convert(const prt::AttributeMap* attrMap, const GA_Offset& rangeStart, const GA_Size& rangeSize,
 	             ArrayHandling arrayHandling = ArrayHandling::TUPLE);
 
 private:

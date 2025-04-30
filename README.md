@@ -362,22 +362,27 @@ See [Quick Start](#quick-start) how to launch Houdini with CityEngine for Houdin
 
 ## Release Notes
 
-### v2.2.0 (mmm d, 2025)
+### v2.2.0 (May 2, 2025)
 
 - Compatible CityEngine versions: 2024.1 or older
+- For commercial work, a [license](https://www.esri.com/cityengine) for CityEngine 2022.0 or later is required.
 
 #### Added:
  
-- Support for Houdini 20.5
+- Added support for Houdini 20.5.
+- Added support for polygon holes when converting Houdini geometry into PRT initial shapes.
 
 #### Changed:
 
-- Updated Procedural Runtime (PRT) to 3.2.10650 (corresponds to CityEngine 2024.1) 
-- Renamed Palladio to "ArcGIS CityEngine for Houdini"
+- Rebranded from "Palladio" to "ArcGIS CityEngine for Houdini". We will continue to use the compact name Palladio" in the source code.
+- Fixed support for Rule Packages inside HDAs (if HDA name contains non-filesystem compatible characters).
+- Always use double precision to transport geometry and attribute values from/to Houdini.
+- Updated Procedural Runtime (PRT) to 3.2.10650 (corresponds to CityEngine 2024.1).
+- Minor code cleanups and CI improvements.
 
 #### Removed:
 
-- Support for Houdini 19.0
+- Removed support for Houdini 19.0.
 
 ### v2.1.0 (Nov 1, 2024)
 

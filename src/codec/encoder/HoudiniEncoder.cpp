@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,21 +21,14 @@
 #include "prtx/Exception.h"
 #include "prtx/ExtensionManager.h"
 #include "prtx/GenerateContext.h"
-#include "prtx/Geometry.h"
 #include "prtx/Log.h"
 #include "prtx/Material.h"
-#include "prtx/Mesh.h"
 #include "prtx/ReportsCollector.h"
-#include "prtx/Shape.h"
 #include "prtx/ShapeIterator.h"
 #include "prtx/URI.h"
 
-#include "prt/prt.h"
-
 #include <algorithm>
 #include <cassert>
-#include <iostream>
-#include <limits>
 #include <memory>
 #include <numeric>
 #include <set>

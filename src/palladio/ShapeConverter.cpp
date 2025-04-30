@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 
 #include "ShapeConverter.h"
-#include "AttributeConversion.h"
 #include "HoleConverter.h"
 #include "LogHandler.h"
 #include "MultiWatch.h"
@@ -30,7 +29,6 @@
 #include "UT/UT_String.h"
 
 #include <numeric>
-#include <set>
 #include <variant>
 #include <vector>
 
@@ -201,8 +199,7 @@ void convertPolygon(ConversionHelper& ch, const GEO_PrimPolySoup::PolygonIterato
 
 std::array<double, 3> getCentroid(const std::vector<double>& coords, const ConversionHelper& ch) {
 	std::array<double, 3> centroid = {0.0, 0.0, 0.0};
-	for (size_t i = 0; i < ch.indices.size(); i++) {
-		auto idx = ch.indices[i];
+	for (unsigned int idx : ch.indices) {
 		centroid[0] += coords[3 * idx + 0];
 		centroid[1] += coords[3 * idx + 1];
 		centroid[2] += coords[3 * idx + 2];
@@ -214,7 +211,7 @@ std::array<double, 3> getCentroid(const std::vector<double>& coords, const Conve
 }
 
 // try to get random seed from incoming primitive attributes (important for default rule attr eval)
-// use centroid based hash as fallback
+// use centroid-based hash as fallback
 int32_t getRandomSeed(const GA_Detail* detail, const GA_Offset& primOffset, const std::vector<double>& coords,
                       const ConversionHelper& ch) {
 	int32_t randomSeed = 0;

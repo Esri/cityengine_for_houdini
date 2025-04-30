@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ bool checkBridgeEnding(BridgeEndCheck endCheck, UndirectedEdgeSet const& bridges
 	auto checkEndPoint = [&startVertexToEndPointEdge](Edge const& bridge) {
 		return startVertexToEndPointEdge.second == bridge.second;
 	};
-	auto it = [&endCheck, &bridges, &startVertexToEndPointEdge, &checkStartPoint, &checkEndPoint]() {
+	auto it = [&endCheck, &bridges, &checkStartPoint, &checkEndPoint]() {
 		if (endCheck == BridgeEndCheck::EDGE_START)
 			return std::find_if(bridges.begin(), bridges.end(), checkStartPoint);
 		else

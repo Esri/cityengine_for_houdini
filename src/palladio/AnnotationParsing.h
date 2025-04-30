@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ using ColorAnnotation = std::array<double, 3>;
 using AnnotationTraitParameter =
         std::variant<std::monostate, EnumAnnotation, RangeAnnotation, FileAnnotation, std::wstring>;
 
-ColorAnnotation parseColor(const std::wstring colorString);
+ColorAnnotation parseColor(const std::wstring& colorString);
 
 std::wstring getColorString(const std::array<float, 3>& rgb);
 

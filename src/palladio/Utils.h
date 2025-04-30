@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@
 #include "prt/ResolveMap.h"
 #include "prt/RuleFileInfo.h"
 
+#include <algorithm>
 #include <filesystem>
 #include <memory>
 #include <optional>
@@ -62,8 +63,8 @@ PLD_TEST_EXPORTS_API std::vector<std::wstring> tokenizeAll(const std::wstring& i
 PLD_TEST_EXPORTS_API std::pair<std::wstring, std::wstring> tokenizeFirst(const std::wstring& input, wchar_t token);
 
 PLD_TEST_EXPORTS_API std::optional<std::pair<std::wstring, std::wstring>> getCGB(const ResolveMapSPtr& rm);
-PLD_TEST_EXPORTS_API const prt::AttributeMap* createValidatedOptions(const wchar_t* encID,
-                                                                     const prt::AttributeMap* unvalidatedOptions);
+PLD_TEST_EXPORTS_API [[nodiscard]] const prt::AttributeMap*
+createValidatedOptions(const wchar_t* encID, const prt::AttributeMap* unvalidatedOptions);
 PLD_TEST_EXPORTS_API std::string objectToXML(prt::Object const* obj);
 
 void getLibraryPath(std::filesystem::path& path, const void* func);
@@ -101,11 +102,7 @@ inline void replace_all_not_of(std::wstring& s, const std::wstring& allowedChars
 }
 
 inline bool startsWithAnyOf(const std::string& s, const std::vector<std::string>& sv) {
-	for (const auto& v : sv) {
-		if (s.find(v) == 0)
-			return true;
-	}
-	return false;
+	return std::any_of(sv.begin(), sv.end(), [&s](std::string const& v) { return (s.find(v) == 0); });
 }
 
 PLD_TEST_EXPORTS_API std::wstring getFileExtensionString(const std::vector<std::wstring>& extensions);
