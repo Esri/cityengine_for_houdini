@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -147,17 +147,17 @@ EnumAnnotation parseEnumAnnotation(const prt::Annotation& annotation) {
 		switch (annotation.getArgument(arg)->getType()) {
 			case prt::AAT_BOOL: {
 				const bool val = annotation.getArgument(arg)->getBool();
-				enumAttribute.mOptions.push_back(std::to_wstring(val).c_str());
+				enumAttribute.mOptions.emplace_back(std::to_wstring(val));
 				break;
 			}
 			case prt::AAT_FLOAT: {
 				const double val = annotation.getArgument(arg)->getFloat();
-				enumAttribute.mOptions.push_back(std::to_wstring(val).c_str());
+				enumAttribute.mOptions.emplace_back(std::to_wstring(val));
 				break;
 			}
 			case prt::AAT_STR: {
 				const wchar_t* val = annotation.getArgument(arg)->getStr();
-				enumAttribute.mOptions.push_back(val);
+				enumAttribute.mOptions.emplace_back(val);
 				break;
 			}
 			default:
@@ -173,7 +173,7 @@ FileAnnotation parseFileAnnotation(const prt::Annotation& annotation) {
 		auto arg = annotation.getArgument(argIdx);
 
 		if (arg->getType() == prt::AAT_STR) {
-			fileAnnotation.push_back(arg->getStr());
+			fileAnnotation.emplace_back(arg->getStr());
 		}
 	}
 	return fileAnnotation;
@@ -195,11 +195,11 @@ AnnotationParsing::AnnotationTraitParameter getGenericAnnotation(const prt::Anno
 		case AnnotationParsing::AttributeTrait::DESCRIPTION:
 			return AnnotationParsing::parseDescriptionAnnotation(annotation);
 		default:
-			return AnnotationParsing::AnnotationTraitParameter();
+			return {};
 	}
 }
 
-ColorAnnotation parseColor(const std::wstring colorString) {
+ColorAnnotation parseColor(const std::wstring& colorString) {
 	ColorAnnotation color{0.0, 0.0, 0.0};
 	if (colorString.size() >= 7 && colorString[0] == '#') {
 		color[0] = static_cast<double>((fromHex(colorString[1]) << 4) + fromHex(colorString[2])) / 255.0;

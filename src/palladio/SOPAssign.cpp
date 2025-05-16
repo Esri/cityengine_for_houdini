@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -279,7 +279,7 @@ void overrideMultiParmDefault(SOPAssign* node, const PRM_Parm& parm, const SOPAs
 				if (!std::holds_alternative<std::vector<bool>>(defArray))
 					continue;
 
-				const std::vector<bool>& boolValues = std::get<std::vector<bool>>(defArray);
+				auto const& boolValues = std::get<std::vector<bool>>(defArray);
 				node->setInt(parmInstToken.c_str(), 0, time, boolValues[i]);
 				break;
 			}
@@ -287,7 +287,7 @@ void overrideMultiParmDefault(SOPAssign* node, const PRM_Parm& parm, const SOPAs
 				if (!std::holds_alternative<std::vector<double>>(defArray))
 					continue;
 
-				const std::vector<double>& doubleValues = std::get<std::vector<double>>(defArray);
+				auto const& doubleValues = std::get<std::vector<double>>(defArray);
 				node->setFloat(parmInstToken.c_str(), 0, time, doubleValues[i]);
 				break;
 			}
@@ -295,7 +295,7 @@ void overrideMultiParmDefault(SOPAssign* node, const PRM_Parm& parm, const SOPAs
 				if (!std::holds_alternative<std::vector<std::wstring>>(defArray))
 					continue;
 
-				const std::vector<std::wstring>& wStringValues = std::get<std::vector<std::wstring>>(defArray);
+				auto const& wStringValues = std::get<std::vector<std::wstring>>(defArray);
 				const UT_StringHolder stringValue(toOSNarrowFromUTF16(wStringValues[i]));
 				node->setString(stringValue, CH_StringMeaning::CH_STRING_LITERAL, parmInstToken.c_str(), 0, time);
 				break;
@@ -688,7 +688,7 @@ bool evaluateDefaultRuleAttributes(SOPAssign* node, const GU_Detail* detail, Sha
 		ruleFileInfos[isIdx] = getRuleFileInfoFromShapeData(detail, shapeData, isIdx, shapeConverter, prtCtx, errors);
 
 		const std::wstring shapeName = L"shape_" + std::to_wstring(isIdx);
-		if (DBG)
+		if constexpr (DBG)
 			LOG_DBG << "evaluating attrs for shape: " << shapeName;
 
 		// persist rule attributes even if empty (need to live until prt::generate is done)
@@ -804,9 +804,9 @@ AnnotationParsing::RangeAnnotation getRange(const AnnotationParsing::TraitParame
 	return AnnotationParsing::RangeAnnotation({minMax, restricted});
 };
 
-bool tryHandleEnum(SOPAssign* node, const std::wstring attrId, const std::wstring attrName, std::wstring defaultValue,
+bool tryHandleEnum(SOPAssign* node, const std::wstring& attrId, const std::wstring& attrName, const std::wstring& defaultValue,
                    prt::AnnotationArgumentType enumType, const AnnotationParsing::TraitParameterMap& traitParmMap,
-                   const std::wstring& description, std::vector<std::wstring> parentFolders) {
+                   const std::wstring& description, const std::vector<std::wstring>& parentFolders) {
 	const auto& enumIt = traitParmMap.find(AnnotationParsing::AttributeTrait::ENUM);
 	if (enumIt == traitParmMap.end())
 		return false;
@@ -829,9 +829,9 @@ bool tryHandleEnum(SOPAssign* node, const std::wstring attrId, const std::wstrin
 	return true;
 }
 
-bool tryHandleRange(SOPAssign* node, const std::wstring attrId, const std::wstring attrName, double defaultValue,
+bool tryHandleRange(SOPAssign* node, const std::wstring& attrId, const std::wstring& attrName, double defaultValue,
                     const AnnotationParsing::TraitParameterMap& traitParmMap, const std::wstring& description,
-                    std::vector<std::wstring> parentFolders) {
+                    const std::vector<std::wstring>& parentFolders) {
 	const bool isAngle = (traitParmMap.find(AnnotationParsing::AttributeTrait::ANGLE) != traitParmMap.end());
 	const bool isPercent = (traitParmMap.find(AnnotationParsing::AttributeTrait::PERCENT) != traitParmMap.end());
 	const bool isRange = (traitParmMap.find(AnnotationParsing::AttributeTrait::RANGE) != traitParmMap.end());
@@ -857,9 +857,9 @@ bool tryHandleRange(SOPAssign* node, const std::wstring attrId, const std::wstri
 	return true;
 }
 
-bool tryHandleFile(SOPAssign* node, const std::wstring attrId, const std::wstring attrName, std::wstring defaultValue,
+bool tryHandleFile(SOPAssign* node, const std::wstring& attrId, const std::wstring& attrName, const std::wstring& defaultValue,
                    const AnnotationParsing::TraitParameterMap& traitParmMap, const std::wstring& description,
-                   std::vector<std::wstring> parentFolders) {
+                   const std::vector<std::wstring>& parentFolders) {
 	const auto& fileIt = traitParmMap.find(AnnotationParsing::AttributeTrait::FILE);
 	if (fileIt == traitParmMap.end())
 		return false;
@@ -870,9 +870,9 @@ bool tryHandleFile(SOPAssign* node, const std::wstring attrId, const std::wstrin
 	return true;
 }
 
-bool tryHandleDir(SOPAssign* node, const std::wstring attrId, const std::wstring attrName, std::wstring defaultValue,
+bool tryHandleDir(SOPAssign* node, const std::wstring& attrId, const std::wstring& attrName, const std::wstring& defaultValue,
                   const AnnotationParsing::TraitParameterMap& traitParmMap, const std::wstring& description,
-                  std::vector<std::wstring> parentFolders) {
+                  const std::vector<std::wstring>& parentFolders) {
 	const auto& dirIt = traitParmMap.find(AnnotationParsing::AttributeTrait::DIR);
 	if (dirIt == traitParmMap.end())
 		return false;
@@ -881,9 +881,9 @@ bool tryHandleDir(SOPAssign* node, const std::wstring attrId, const std::wstring
 	return true;
 }
 
-bool tryHandleColor(SOPAssign* node, const std::wstring attrId, const std::wstring attrName, std::wstring defaultValue,
+bool tryHandleColor(SOPAssign* node, const std::wstring& attrId, const std::wstring& attrName, const std::wstring& defaultValue,
                     const AnnotationParsing::TraitParameterMap& traitParmMap, const std::wstring& description,
-                    std::vector<std::wstring> parentFolders) {
+                    const std::vector<std::wstring>& parentFolders) {
 	const auto& colorIt = traitParmMap.find(AnnotationParsing::AttributeTrait::COLOR);
 	if (colorIt == traitParmMap.end())
 		return false;
@@ -901,7 +901,7 @@ void setAttributeRange(const GA_Range& range, H& handle, const V& value) {
 } // namespace
 
 SOPAssign::SOPAssign(const PRTContextUPtr& pCtx, OP_Network* net, const char* name, OP_Operator* op)
-    : SOP_Node(net, name, op), mPRTCtx(pCtx), mShapeConverter(new ShapeConverter()) {}
+    : SOP_Node(net, name, op), mPRTCtx(pCtx), mShapeConverter(std::make_unique<ShapeConverter>()) {}
 
 void SOPAssign::updateDefaultCGAAttributes(const ShapeData& shapeData) {
 	mDefaultCGAAttributes.clear();
@@ -911,9 +911,7 @@ void SOPAssign::updateDefaultCGAAttributes(const ShapeData& shapeData) {
 		defaultRuleAttributeMaps.emplace_back(amb->createAttributeMap());
 	}
 
-	for (size_t isIdx = 0; isIdx < defaultRuleAttributeMaps.size(); isIdx++) {
-		const auto& defaultRuleAttributes = defaultRuleAttributeMaps[isIdx];
-
+	for (AttributeMapUPtr const& defaultRuleAttributes : defaultRuleAttributeMaps) {
 		size_t keyCount = 0;
 		const wchar_t* const* cKeys = defaultRuleAttributes->getKeys(&keyCount);
 		for (size_t k = 0; k < keyCount; k++) {
@@ -942,7 +940,7 @@ void SOPAssign::updateDefaultCGAAttributes(const ShapeData& shapeData) {
 					std::vector<double> doubleVec;
 					doubleVec.reserve(arr_length);
 
-					for (short enumIndex = 0; enumIndex < arr_length; enumIndex++)
+					for (size_t enumIndex = 0; enumIndex < arr_length; enumIndex++)
 						doubleVec.emplace_back(doubleArray[enumIndex]);
 
 					defVal = doubleVec;
@@ -954,7 +952,7 @@ void SOPAssign::updateDefaultCGAAttributes(const ShapeData& shapeData) {
 					std::vector<bool> boolVec;
 					boolVec.reserve(arr_length);
 
-					for (short enumIndex = 0; enumIndex < arr_length; enumIndex++)
+					for (size_t enumIndex = 0; enumIndex < arr_length; enumIndex++)
 						boolVec.emplace_back(boolArray[enumIndex]);
 
 					defVal = boolVec;
@@ -968,7 +966,7 @@ void SOPAssign::updateDefaultCGAAttributes(const ShapeData& shapeData) {
 					std::vector<std::wstring> stringVec;
 					stringVec.reserve(arr_length);
 
-					for (short enumIndex = 0; enumIndex < arr_length; enumIndex++)
+					for (size_t enumIndex = 0; enumIndex < arr_length; enumIndex++)
 						stringVec.emplace_back(stringArray[enumIndex]);
 
 					defVal = stringVec;
@@ -1132,7 +1130,7 @@ void SOPAssign::buildUI(const RuleAttributeSet& ruleAttributes, const RuleFileIn
 		const std::wstring& description = getDescription(traitParmMap);
 
 		FolderVec parentFolders;
-		parentFolders.push_back(RULE_ATTRIBUTES_FOLDER_NAME);
+		parentFolders.emplace_back(RULE_ATTRIBUTES_FOLDER_NAME);
 		parentFolders.push_back(ra.ruleFile);
 		parentFolders.insert(parentFolders.end(), ra.groups.begin(), ra.groups.end());
 

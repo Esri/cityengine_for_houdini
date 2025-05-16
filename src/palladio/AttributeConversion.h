@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ namespace AttributeConversion {
 
 class FromHoudini {
 public:
-	FromHoudini(prt::AttributeMapBuilder& builder) : mBuilder(builder) {}
+	explicit FromHoudini(prt::AttributeMapBuilder& builder) : mBuilder(builder) {}
 	FromHoudini(const FromHoudini&) = delete;
 	FromHoudini(FromHoudini&&) = delete;
 	FromHoudini& operator=(const FromHoudini&) = delete;
@@ -67,7 +67,7 @@ private:
 
 class ToHoudini {
 public:
-	ToHoudini(GU_Detail* detail) : mDetail(detail) {}
+	explicit ToHoudini(GU_Detail* detail) : mDetail(detail) {}
 	ToHoudini(const ToHoudini&) = delete;
 	ToHoudini(ToHoudini&&) = delete;
 	ToHoudini& operator=(const ToHoudini&) = delete;
@@ -75,12 +75,12 @@ public:
 	virtual ~ToHoudini() = default;
 
 	enum class ArrayHandling { TUPLE, ARRAY };
-	void convert(const prt::AttributeMap* attrMap, const GA_Offset rangeStart, const GA_Size rangeSize,
+	void convert(const prt::AttributeMap* attrMap, const GA_Offset& rangeStart, const GA_Size& rangeSize,
 	             ArrayHandling arrayHandling = ArrayHandling::TUPLE);
 
 private:
 	using NoHandle = int8_t;
-	using HandleType = std::variant<NoHandle, GA_RWBatchHandleS, GA_RWHandleI, GA_RWHandleC, GA_RWHandleF,
+	using HandleType = std::variant<NoHandle, GA_RWBatchHandleS, GA_RWHandleI, GA_RWHandleC, GA_RWHandleD,
 	                                GA_RWHandleSA, GA_RWHandleIA, GA_RWHandleDA>;
 
 	struct ProtoHandle {
@@ -99,7 +99,7 @@ private:
 		void operator()(GA_RWBatchHandleS& handle) const;
 		void operator()(GA_RWHandleI& handle) const;
 		void operator()(GA_RWHandleC& handle) const;
-		void operator()(GA_RWHandleF& handle) const;
+		void operator()(GA_RWHandleD& handle) const;
 		void operator()(GA_RWHandleDA& handle) const;
 		void operator()(GA_RWHandleIA& handle) const;
 		void operator()(GA_RWHandleSA& handle) const;

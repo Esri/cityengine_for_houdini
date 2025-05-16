@@ -16,8 +16,24 @@
 
 #pragma once
 
-#ifdef _WIN32
-#	define CODEC_EXPORTS_API __declspec(dllexport)
-#else
-#	define CODEC_EXPORTS_API __attribute__((visibility("default")))
-#endif
+#include <cstdint>
+#include <functional>
+#include <vector>
+
+namespace HoleConverter {
+
+using Edge = std::pair<int64_t, int64_t>;
+using Edges = std::vector<Edge>;
+
+struct EdgeSource {
+	virtual Edges getEdges() const = 0;
+	virtual int64_t getPointIndex(int64_t vertexIndex) const = 0;
+	virtual bool isBridge(int64_t pointIndexA, int64_t pointIndexB) const = 0;
+};
+
+using FaceOrHoleIndices = std::vector<int64_t>;
+using FaceWithHoles = std::vector<FaceOrHoleIndices>; // first item is outer ring/face
+
+FaceWithHoles extractHoles(EdgeSource const& source);
+
+} // namespace HoleConverter

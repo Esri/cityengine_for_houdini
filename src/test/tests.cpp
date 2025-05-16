@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 #include "TestCallbacks.h"
 #include "TestUtils.h"
 
+#include "HoleConverter.h"
 #include "PRTContext.h"
 #include "Utils.h"
 #include "encoder/HoudiniEncoder.h"
@@ -30,6 +31,7 @@
 
 #include <algorithm>
 #include <filesystem>
+#include <memory>
 
 namespace {
 
@@ -48,7 +50,7 @@ void compareReversed(const std::vector<T>& a, const std::vector<T>& b) {
 int main(int argc, char* argv[]) {
 	assert(!prtCtx);
 	const std::vector<std::filesystem::path> addExtDirs = {TEST_RUN_PRT_EXT_DIR, TEST_RUN_CODEC_EXT_DIR};
-	prtCtx.reset(new PRTContext(addExtDirs));
+	prtCtx = std::make_unique<PRTContext>(addExtDirs);
 	int result = Catch::Session().run(argc, argv);
 	prtCtx.reset();
 	return result;
@@ -88,9 +90,9 @@ TEST_CASE("replace chars not in set", "[utils]") {
 	}
 
 	SECTION("empty") {
-		std::wstring s = L"";
+		std::wstring s;
 		replace_all_not_of(s, ac);
-		CHECK(s == L"");
+		CHECK(s.empty());
 	}
 
 	SECTION("one char") {
@@ -241,6 +243,73 @@ TEST_CASE("create file extension string", "[utils]") {
 	}
 }
 
+TEST_CASE("legalize file stem and ensure it does not exist") {
+	auto const base = std::filesystem::temp_directory_path() / std::tmpnam(nullptr);
+	REQUIRE(!std::filesystem::exists(base));
+	std::filesystem::create_directories(base);
+
+	SECTION("default case") {
+		std::filesystem::path p = base / "foo.bar";
+		ensureNonExistingFile(p);
+		CHECK(p == base / "foo.bar");
+	}
+
+	SECTION("default case without extension") {
+		std::filesystem::path p = base / "foo";
+		ensureNonExistingFile(p);
+		CHECK(p == base / "foo");
+	}
+
+	SECTION("existing file") {
+		std::filesystem::path p = base / "foo.bar";
+		std::ofstream out(p);
+		REQUIRE(std::filesystem::exists(p));
+		ensureNonExistingFile(p);
+		CHECK(p == base / "foo_0.bar");
+	}
+
+	SECTION("existing file without extension") {
+		std::filesystem::path p = base / "foo";
+		std::ofstream out(p);
+		REQUIRE(std::filesystem::exists(p));
+		ensureNonExistingFile(p);
+		CHECK(p == base / "foo_0");
+	}
+
+	SECTION("existing file with suffix") {
+		std::filesystem::path p = base / "foo_0.bar";
+		std::ofstream out(p);
+		REQUIRE(std::filesystem::exists(p));
+		ensureNonExistingFile(p);
+		CHECK(p == base / "foo_0_0.bar");
+	}
+
+	SECTION("existing directory of same name") {
+		std::filesystem::path p = base / "foo.bar";
+		std::filesystem::create_directories(p);
+		REQUIRE(std::filesystem::exists(p));
+		ensureNonExistingFile(p);
+		CHECK(p == base / "foo_0.bar");
+	}
+
+	SECTION("special characters (colons)") {
+		std::filesystem::path p = base / "Candl;er::1.0?CandlerBuilding.rpk";
+		ensureNonExistingFile(p);
+		CHECK(p == base / "Candl;er__1.0_CandlerBuilding.rpk");
+	}
+
+	SECTION("existing file with special characters (colons)") {
+		std::filesystem::path c = base / "Candl;er__1.0_CandlerBuilding.rpk";
+		std::ofstream out(c);
+		REQUIRE(std::filesystem::exists(c));
+		std::filesystem::path p = base / "Candl;er::1.0?CandlerBuilding.rpk";
+		ensureNonExistingFile(p);
+		CHECK(p == base / "Candl;er__1.0_CandlerBuilding_0.rpk");
+	}
+
+	std::filesystem::remove_all(base);
+}
+
 // -- encoder test cases
 
 TEST_CASE("serialize basic mesh") {
@@ -273,9 +342,9 @@ TEST_CASE("serialize basic mesh") {
 	CHECK(sg.coords == vtx);
 	CHECK(sg.vertexIndices == vtxIndRev); // reverses winding
 
-	CHECK(sg.uvs.size() == 0);
-	CHECK(sg.uvCounts.size() == 0);
-	CHECK(sg.uvIndices.size() == 0);
+	CHECK(sg.uvs.empty());
+	CHECK(sg.uvCounts.empty());
+	CHECK(sg.uvIndices.empty());
 }
 
 TEST_CASE("serialize mesh with one uv set") {
@@ -800,11 +869,56 @@ TEST_CASE("generate without polygon hole triangulation") {
 	CHECK(cr.cnts.size() == 30); // 26 quads and 4 holes
 
 	REQUIRE(cr.holeCnts.size() == 30); // same as cnts
-	CHECK(cr.holeCnts[25] == 4);       // top face has four holes
+	CHECK(cr.holeCnts[5] == 4);        // top face has four holes
 
 	REQUIRE(cr.holeIdx.size() == 4);
 	CHECK(cr.holeIdx[0] == 26);
 	CHECK(cr.holeIdx[1] == 27);
 	CHECK(cr.holeIdx[2] == 28);
 	CHECK(cr.holeIdx[3] == 29);
+}
+
+TEST_CASE("convert initial shape holes") {
+	struct TestSource : HoleConverter::EdgeSource {
+		HoleConverter::Edges getEdges() const override {
+			return {{0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 9}, {9, 0}};
+		}
+
+		int64_t getPointIndex(int64_t vertexIndex) const override {
+			static std::vector<int64_t> V2P = {4, 5, 7, 6, 2, 3, 1, 0, 2, 6};
+			return V2P[vertexIndex];
+		}
+
+		bool isBridge(int64_t pointIndexA, int64_t pointIndexB) const override {
+			return (pointIndexA == 2 && pointIndexB == 6) || (pointIndexA == 6 && pointIndexB == 2);
+		}
+	};
+
+	SECTION("default") {
+		HoleConverter::FaceWithHoles faceWithHole = HoleConverter::extractHoles(TestSource());
+		const HoleConverter::FaceWithHoles expected = {{0, 1, 2, 9}, {4, 5, 6, 7}};
+		CHECK(faceWithHole == expected);
+	}
+
+	SECTION("no bridges") {
+		struct NoBridgesTestSource : TestSource {
+			bool isBridge(int64_t pointIndexA, int64_t pointIndexB) const override {
+				return false;
+			}
+		};
+		HoleConverter::FaceWithHoles faceWithHole = HoleConverter::extractHoles(NoBridgesTestSource());
+		const HoleConverter::FaceWithHoles expected = {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}};
+		CHECK(faceWithHole == expected);
+	}
+
+	SECTION("empty") {
+		struct EmptyTestSource : TestSource {
+			HoleConverter::Edges getEdges() const override {
+				return {};
+			}
+		};
+		HoleConverter::FaceWithHoles faceWithHole = HoleConverter::extractHoles(EmptyTestSource());
+		const HoleConverter::FaceWithHoles expected = {{}};
+		CHECK(faceWithHole == expected);
+	}
 }

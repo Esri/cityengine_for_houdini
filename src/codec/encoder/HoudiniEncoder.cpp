@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,21 +21,14 @@
 #include "prtx/Exception.h"
 #include "prtx/ExtensionManager.h"
 #include "prtx/GenerateContext.h"
-#include "prtx/Geometry.h"
 #include "prtx/Log.h"
 #include "prtx/Material.h"
-#include "prtx/Mesh.h"
 #include "prtx/ReportsCollector.h"
-#include "prtx/Shape.h"
 #include "prtx/ShapeIterator.h"
 #include "prtx/URI.h"
 
-#include "prt/prt.h"
-
 #include <algorithm>
 #include <cassert>
-#include <iostream>
-#include <limits>
 #include <memory>
 #include <numeric>
 #include <set>
@@ -157,13 +150,13 @@ const std::set<std::wstring> MATERIAL_ATTRIBUTE_BLACKLIST = {
 
 void convertMaterialToAttributeMap(prtx::PRTUtils::AttributeMapBuilderPtr& aBuilder, const prtx::Material& prtxAttr,
                                    const prtx::WStringVector& keys) {
-	if (DBG)
+	if constexpr (DBG)
 		log_debug(L"-- converting material: %1%") % prtxAttr.name();
 	for (const auto& key : keys) {
 		if (MATERIAL_ATTRIBUTE_BLACKLIST.count(key) > 0)
 			continue;
 
-		if (DBG)
+		if constexpr (DBG)
 			log_debug(L"   key: %1%") % key;
 
 		switch (prtxAttr.getType(key)) {
@@ -233,7 +226,7 @@ void convertMaterialToAttributeMap(prtx::PRTUtils::AttributeMapBuilderPtr& aBuil
 			}
 
 			default:
-				if (DBG)
+				if constexpr (DBG)
 					log_debug(L"ignored atttribute '%s' with type %d") % key % prtxAttr.getType(key);
 				break;
 		}
@@ -431,7 +424,7 @@ SerializedGeometry serializeGeometry(const prtx::GeometryPtrVector& geometries,
 			const prtx::DoubleVector& uvs0 = (numUVSets > 0) ? mesh->getUVCoords(0) : EMPTY_UVS;
 			const prtx::IndexVector faceUVCounts0 =
 			        (numUVSets > 0) ? mesh->getFaceUVCounts(0) : prtx::IndexVector(mesh->getFaceCount(), 0);
-			if (DBG)
+			if constexpr (DBG)
 				log_debug("-- mesh: numUVSets = %1%") % numUVSets;
 
 			for (uint32_t uvSet = 0; uvSet < sg.uvs.size(); uvSet++) {
@@ -447,7 +440,7 @@ SerializedGeometry serializeGeometry(const prtx::GeometryPtrVector& geometries,
 				assert(faceUVCounts.size() == mesh->getFaceCount());
 				auto& tgtCnts = sg.uvCounts[uvSet];
 				tgtCnts.insert(tgtCnts.end(), faceUVCounts.begin(), faceUVCounts.end());
-				if (DBG)
+				if constexpr (DBG)
 					log_debug("   -- uvset %1%: face counts size = %2%") % uvSet % faceUVCounts.size();
 
 				// append uv vertex indices
@@ -456,7 +449,7 @@ SerializedGeometry serializeGeometry(const prtx::GeometryPtrVector& geometries,
 					const uint32_t* faceUVIdx =
 					        (uvSet < numUVSets && !uvs.empty()) ? mesh->getFaceUVIndices(fi, uvSet) : faceUVIdx0;
 					const uint32_t faceUVCnt = faceUVCounts[fi];
-					if (DBG)
+					if constexpr (DBG)
 						log_debug("      fi %1%: faceUVCnt = %2%, faceVtxCnt = %3%") % fi % faceUVCnt %
 						        mesh->getFaceVertexCount(fi);
 					for (uint32_t vi = 0; vi < faceUVCnt; vi++)
@@ -508,10 +501,10 @@ HoudiniEncoder::HoudiniEncoder(const std::wstring& id, const prt::AttributeMap* 
 
 void HoudiniEncoder::init(prtx::GenerateContext&) {
 	prt::Callbacks* cb = getCallbacks();
-	if (DBG)
+	if constexpr (DBG)
 		log_debug("HoudiniEncoder::init: cb = %x") % (size_t)cb;
 	auto* oh = dynamic_cast<HoudiniCallbacks*>(cb);
-	if (DBG)
+	if constexpr (DBG)
 		log_debug("                   oh = %x") % (size_t)oh;
 	if (oh == nullptr)
 		throw prtx::StatusException(prt::STATUS_ILLEGAL_CALLBACK_OBJECT);
@@ -586,7 +579,7 @@ void HoudiniEncoder::convertGeometry(const prtx::InitialShape& initialShape,
 
 	const detail::SerializedGeometry sg = detail::serializeGeometry(geometries, materials);
 
-	if (DBG) {
+	if constexpr (DBG) {
 		log_debug("resolvemap: %s") % prtx::PRTUtils::objectToXML(initialShape.getResolveMap());
 		log_debug("encoder #materials = %s") % materials.size();
 	}
@@ -618,7 +611,7 @@ void HoudiniEncoder::convertGeometry(const prtx::InitialShape& initialShape,
 			if (emitReports) {
 				convertReportsToAttributeMap(amb, *repIt);
 				reportAttrMaps.v.push_back(amb->createAttributeMapAndReset());
-				if (DBG)
+				if constexpr (DBG)
 					log_debug("report attr map: %1%") % prtx::PRTUtils::objectToXML(reportAttrMaps.v.back());
 			}
 
@@ -655,7 +648,7 @@ void HoudiniEncoder::convertGeometry(const prtx::InitialShape& initialShape,
 	        faceRanges.data(), faceRanges.size(), matAttrMaps.v.empty() ? nullptr : matAttrMaps.v.data(),
 	        reportAttrMaps.v.empty() ? nullptr : reportAttrMaps.v.data(), shapeIDs.data());
 
-	if (DBG)
+	if constexpr (DBG)
 		log_debug("HoudiniEncoder::convertGeometry: end");
 }
 

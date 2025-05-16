@@ -24,29 +24,25 @@ import com.esri.zrh.jenkins.psl.UploadTrackingPsl
 @Field final String BUILD_TARGET = 'package'
 @Field final String SOURCE_STASH = 'palladio-src'
 
+@Field final String DOCKER_IMAGE_REV = 'v0'
+@Field final String DOCKER_IMAGE_ID = 'palladio/palladio-tc'
+@Field final String DOCKER_IMAGE_TAG_BASE_LINUX = 'almalinux8-gcc11'
+@Field final String DOCKER_IMAGE_TAG_BASE_WINDOWS = 'win19-vc1437'
+
+@Field final String[] HDK_VER = [ '20.5.522', '20.0.896', '19.5.805' ]
+
 @Field final List CONFIGS_CHECKOUT = [ [ ba: PSL.BA_CHECKOUT ] ]
-@Field final Map DOCKER_IMAGE_LINUX_CONFIG = [ ba: PSL.BA_LINUX_DOCKER, containerId: "build_tools/ce-tc-prt:almalinux8-gcc11-v2", containerWorkspace: "/tmp/app" ]
+@Field final Map DOCKER_IMAGE_LINUX_CONFIG = [ ba: PSL.BA_LINUX_DOCKER, containerWorkspace: "/tmp/work" ]
+@Field final Map DOCKER_IMAGE_WINDOWS_CONFIG = [ ba: 'win19-64-d', containerWorkspace: 'c:/tmp/work' ]
+@Field final Map BUILD_ENV_LINUX_CONFIG = [ os: CEPL.CFG_OS_RHEL8, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_GCC112, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64 ]
+@Field final Map BUILD_ENV_WINDOWS_CONFIG = [ os: CEPL.CFG_OS_WIN10, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_VC1437, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64 ]
+@Field final Map BUILD_ENV_LINUX_CONFIG_CESDK_LATEST = BUILD_ENV_LINUX_CONFIG
+@Field final Map BUILD_ENV_WINDOWS_CONFIG_CESDK_LATEST = BUILD_ENV_WINDOWS_CONFIG + [ tc: CEPL.CFG_TC_VC1438 ]
+@Field final Map BUILD_ENV_CESDK_LATEST = [ grp: 'cesdkLatest', cesdk: PAPL.Dependencies.CESDK_LATEST ]
 
 @Field final List CONFIGS_TEST = [
-	DOCKER_IMAGE_LINUX_CONFIG + [ os: CEPL.CFG_OS_RHEL8, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_GCC112, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64 ],
-	[ os: CEPL.CFG_OS_WIN10, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_VC1437, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64 ],
-]
-
-@Field final List CONFIGS_HOUDINI_190 = [
-	DOCKER_IMAGE_LINUX_CONFIG + [ os: CEPL.CFG_OS_RHEL8, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_GCC112, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '19.0' ],
-	[ os: CEPL.CFG_OS_WIN10, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_VC1437, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '19.0' ],
-]
-
-@Field final List CONFIGS_HOUDINI_195 = [
-	DOCKER_IMAGE_LINUX_CONFIG + [ os: CEPL.CFG_OS_RHEL8, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_GCC112, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '19.5' ],
-	[ os: CEPL.CFG_OS_WIN10, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_VC1437, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '19.5' ],
-]
-
-@Field final List CONFIGS_HOUDINI_200 = [
-	DOCKER_IMAGE_LINUX_CONFIG + [ os: CEPL.CFG_OS_RHEL8, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_GCC112, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '20.0' ],
-	[ os: CEPL.CFG_OS_WIN10, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_VC1437, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '20.0' ],
-	DOCKER_IMAGE_LINUX_CONFIG + [ grp: 'cesdkLatest', os: CEPL.CFG_OS_RHEL8, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_GCC112, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '20.0', cesdk: PAPL.Dependencies.CESDK_LATEST ],
-	[ grp: 'cesdkLatest', os: CEPL.CFG_OS_WIN10, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_VC1437, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64, houdini: '20.0', cesdk: PAPL.Dependencies.CESDK_LATEST ],
+	DOCKER_IMAGE_LINUX_CONFIG + BUILD_ENV_LINUX_CONFIG + [ houdini: HDK_VER[0] ],
+	DOCKER_IMAGE_WINDOWS_CONFIG + BUILD_ENV_WINDOWS_CONFIG + [ houdini: HDK_VER[0] ],
 ]
 
 
@@ -59,7 +55,7 @@ properties([ disableConcurrentBuilds() ])
 
 // -- PIPELINE
 
-stage('prepare'){
+stage('prepare') {
 	cepl.runParallel(taskGenCheckout())
 }
 
@@ -89,10 +85,22 @@ Map taskGenTest() {
 }
 
 Map taskGenBuild() {
-    Map tasks = [:]
-	tasks << cepl.generateTasks('pld-hdn19.0', this.&taskBuildPalladio, CONFIGS_HOUDINI_190)
-	tasks << cepl.generateTasks('pld-hdn19.5', this.&taskBuildPalladio, CONFIGS_HOUDINI_195)
-	tasks << cepl.generateTasks('pld-hdn20.0', this.&taskBuildPalladio, CONFIGS_HOUDINI_200)
+	Map tasks = [:]
+	for (int i = 0; i < HDK_VER.length; i++) {
+		Map hdk = [ houdini: HDK_VER[i] ]
+		List config = [
+			DOCKER_IMAGE_LINUX_CONFIG + BUILD_ENV_LINUX_CONFIG + hdk,
+			DOCKER_IMAGE_WINDOWS_CONFIG + BUILD_ENV_WINDOWS_CONFIG + hdk,
+		]
+
+		// for latest HDK, we also build against the internal latest CESDK build
+		if (i == 0) {
+			config << DOCKER_IMAGE_LINUX_CONFIG + BUILD_ENV_LINUX_CONFIG_CESDK_LATEST + BUILD_ENV_CESDK_LATEST + hdk
+			config << DOCKER_IMAGE_WINDOWS_CONFIG + BUILD_ENV_WINDOWS_CONFIG_CESDK_LATEST + BUILD_ENV_CESDK_LATEST + hdk
+		}
+
+		tasks << cepl.generateTasks('pld-hdk'+i, this.&taskBuildPalladio, config)
+	}
 	return tasks;
 }
 
@@ -122,10 +130,7 @@ def taskBuildPalladio(cfg) {
 		[ key: 'PLD_HOUDINI_VERSION', val: cfg.houdini]
 	]
 
-	final String stdOut = buildPalladio(cfg, defs, BUILD_TARGET)
-	if(!papl.runsOnDocker(cfg)) {
-		scanAndPublishBuildIssues(cfg, stdOut)
-	}
+	buildPalladio(cfg, defs, BUILD_TARGET)
 
 	def versionExtractor = { p ->
 		def vers = (p =~ /.*palladio-(.*)\.hdn.*/)
@@ -139,32 +144,30 @@ def taskBuildPalladio(cfg) {
 }
 
 def buildPalladio(cfg, defs, target) {
-	if(cfg.os == CEPL.CFG_OS_RHEL8) {
-		Map dirMap = [ "${env.WORKSPACE}" : cfg.containerWorkspace ]
-		Map envMap = [ DEFAULT_UID: '$(id -u)', DEFAULT_GID: '$(id -g)', WORKSPACE: cfg.containerWorkspace ]
-		String src = "${cfg.containerWorkspace}/${SOURCE}";
-		String bld = "${cfg.containerWorkspace}/build";
+	final Map dirMap = [ "${env.WORKSPACE}" : cfg.containerWorkspace ]
+	final String src = "${cfg.containerWorkspace}/${SOURCE}";
+	final String bld = "${cfg.containerWorkspace}/build";
+	final Map envMap = [ WORKSPACE: cfg.containerWorkspace ]
 
-		cmd = "cd ${src}"
-		cmd += "\npython3 -m ensurepip"
-		cmd += "\npython3 -m pip install --user pipenv"
-		cmd += "\npython3 -m pipenv install"
-		cmd += "\nPYVENV=\$(python3 -m pipenv --venv)"
-		cmd += "\ncd ${cfg.containerWorkspace}"
-		cmd += "\nsource \${PYVENV}/bin/activate"
-		cmd += "\nconan remote add --force --insert=0 zrh-conan ${psl.CONAN_REMOTE_URL}"
-
-		cmd += "\ncmake -G Ninja -DCMAKE_BUILD_TYPE=Release "
-		defs.each { d -> cmd += " -D${d.key}=${ (d.val instanceof Closure) ? d.val.call(cfg) : d.val }" }
-		cmd +=" -S ${src} -B ${bld}"
-
-		cmd += "\ncmake --build ${bld} --target ${target}"
-		String stdOut = psl.runDockerCmd(cfg.containerId, cfg.containerWorkspace, cmd, dirMap, envMap)
-		echo(stdOut)
-		return stdOut
-	} else {
-		return papl.runCMakeBuild(SOURCE, 'build', target, cfg, defs)
+	String cmd = ''
+	if (cfg.os == CEPL.CFG_OS_RHEL8) {
+		envMap << [ DEFAULT_UID: '$(id -u)', DEFAULT_GID: '$(id -g)' ]
 	}
+
+    cmd += "cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -S ${src} -B ${bld}"
+    defs.each { d ->
+        String val = (d.val instanceof Closure) ? d.val.call(cfg) : d.val
+        val = val.replace('%', '%%') // Windows: defer expansion of env vars to container run time
+        cmd += " -D${d.key}=${val}"
+    }
+	cmd += " && cmake --build ${bld} --target ${target}"
+	psl.runDockerCmd(getContainerId(cfg), cfg.containerWorkspace, cmd, dirMap, envMap)
+}
+
+String getContainerId(cfg) {
+	String tagBase = (cfg.os == CEPL.CFG_OS_RHEL8) ? DOCKER_IMAGE_TAG_BASE_LINUX : DOCKER_IMAGE_TAG_BASE_WINDOWS
+	String hdkVersion = cfg.houdini.replace(".", "")
+	return "${DOCKER_IMAGE_ID}:${tagBase}-hdk${hdkVersion}-${DOCKER_IMAGE_REV}"
 }
 
 def scanAndPublishBuildIssues(Map cfg, String consoleOut) {

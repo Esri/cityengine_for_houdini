@@ -27,9 +27,9 @@ public:
 	typedef std::list<key_type> list_type;
 	typedef std::map<key_type, std::pair<value_type, typename list_type::iterator>> map_type;
 
-	lru_cache(size_t capacity) : m_capacity(capacity) {}
+	explicit lru_cache(size_t capacity) : m_capacity(capacity) {}
 
-	~lru_cache() {}
+	~lru_cache() = default;
 
 	size_t size() const {
 		return m_map.size();
@@ -47,7 +47,7 @@ public:
 		return m_map.find(key) != m_map.end();
 	}
 
-	void insert(const key_type& key, const value_type& value) {
+	virtual void insert(const key_type& key, const value_type& value) {
 		typename map_type::iterator i = m_map.find(key);
 		if (i == m_map.end()) {
 			// insert item into the mCache, but first check if it is full
@@ -62,7 +62,7 @@ public:
 		}
 	}
 
-	std::optional<value_type> get(const key_type& key) {
+	virtual std::optional<value_type> get(const key_type& key) {
 		// lookup value in the mCache
 		typename map_type::iterator i = m_map.find(key);
 		if (i == m_map.end()) {
@@ -113,7 +113,7 @@ private:
 };
 
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -143,7 +143,7 @@ private:
 #endif
 
 public:
-	LockedLRUCache(size_t capacity) : Base{capacity} {}
+	explicit LockedLRUCache(size_t capacity) : Base{capacity} {}
 
 	~LockedLRUCache() {
 #ifdef LOCKED_LRU_CACHE_STATS
@@ -152,12 +152,12 @@ public:
 #endif
 	}
 
-	void insert(const K& key, const V& value) {
+	void insert(const K& key, const V& value) override {
 		std::lock_guard<std::mutex> guard(mMutex);
 		Base::insert(key, value);
 	}
 
-	std::optional<V> get(const K& key) {
+	std::optional<V> get(const K& key) override {
 		std::lock_guard<std::mutex> guard(mMutex);
 		auto v = Base::get(key);
 

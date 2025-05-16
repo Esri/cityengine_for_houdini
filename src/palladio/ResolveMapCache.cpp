@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@
 #endif
 
 #include <fstream>
+#include <string_view>
 
 namespace {
 
@@ -76,9 +77,8 @@ std::filesystem::path resolveFromHDA(const std::filesystem::path& p, const std::
 	UT_StringHolder container = getFSReaderFilename(fsr);
 	LOG_DBG << "resource container: " << container;
 
-	auto resName = p.filename().string();
-	std::replace(resName.begin(), resName.end(), '?', '_'); // TODO: generalize
-	std::filesystem::path extractedResource = unpackPath / resName;
+	std::filesystem::path extractedResource = unpackPath / p.filename();
+	ensureNonExistingFile(extractedResource);
 
 	if (fsr.isGood()) {
 		std::filesystem::create_directories(unpackPath);

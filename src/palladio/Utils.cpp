@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,8 @@
 #include <string_view>
 
 namespace {
+
+constexpr std::string_view ILLEGAL_FS_CHARS = "\\/:*?\"<>|";
 
 template <typename inC, typename outC, typename FUNC>
 std::basic_string<outC> callAPI(FUNC f, const std::basic_string<inC>& s) {
@@ -202,11 +204,11 @@ std::string objectToXML(prt::Object const* obj) {
 
 void getLibraryPath(std::filesystem::path& path, const void* func) {
 #ifdef _WIN32
-	HMODULE dllHandle = 0;
+	HMODULE dllHandle = nullptr;
 	if (!GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCSTR)func, &dllHandle)) {
 		DWORD c = GetLastError();
 		char msg[255];
-		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, 0, c, 0, msg, 255, 0);
+		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nullptr, c, 0, msg, 255, nullptr);
 		throw std::runtime_error("error while trying to get current module handle': " + std::string(msg));
 	}
 	assert(sizeof(TCHAR) == 1);
@@ -216,7 +218,7 @@ void getLibraryPath(std::filesystem::path& path, const void* func) {
 	if (pathSize == 0 || pathSize == PATHMAXSIZE) {
 		DWORD c = GetLastError();
 		char msg[255];
-		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, 0, c, 0, msg, 255, 0);
+		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nullptr, c, 0, msg, 255, nullptr);
 		throw std::runtime_error("error while trying to get current module path': " + std::string(msg));
 	}
 	path = pathA;
@@ -345,4 +347,23 @@ std::wstring getFileExtensionString(const std::vector<std::wstring>& extensions)
 	if (extensionString.empty())
 		return FILE_ANY;
 	return extensionString;
+}
+
+void ensureNonExistingFile(std::filesystem::path& p) {
+	std::string fileName = p.filename().generic_string();
+
+	// filter out common illegal characters
+	// note: this needs to be done before we use functions like p.stem()
+	//       to correctly handle ':' in Windows paths
+	auto filterChar = [](char c) { return (ILLEGAL_FS_CHARS.find(c) != std::string::npos); };
+	std::replace_if(fileName.begin(), fileName.end(), filterChar, '_');
+
+	auto cleanFileName =  std::filesystem::path(fileName);
+	auto stem = cleanFileName.stem().generic_string();
+	p = p.parent_path() / (stem + cleanFileName.extension().generic_string());
+
+	// ensure we do not produce a collision with existing file
+	for (size_t suf = 0; std::filesystem::exists(p); suf++) {
+		p = p.parent_path() / (stem + '_' + std::to_string(suf) + p.extension().generic_string());
+	}
 }

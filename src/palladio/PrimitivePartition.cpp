@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ PrimitivePartition::PrimitivePartition(const GA_Detail* detail, const PrimitiveC
 }
 
 void PrimitivePartition::add(const GA_Detail* detail, const PrimitiveClassifier& primCls, const GA_Primitive* p) {
-	if (DBG)
+	if constexpr (DBG)
 		LOG_DBG << "      adding prim: " << detail->primitiveIndex(p->getMapOffset());
 
 	PrimitiveClassifier updatedPrimCls;
@@ -56,19 +56,19 @@ void PrimitivePartition::add(const GA_Detail* detail, const PrimitiveClassifier&
 	// try to read actual attr value and classify primitive
 	if (primClsAttrRef.isInvalid()) {
 		mPrimitives[INVALID_CLS_VALUE].push_back(p);
-		if (DBG)
+		if constexpr (DBG)
 			LOG_DBG << "       missing cls name: adding prim to fallback shape!";
 	}
 	else if (primClsAttrRef.isInt()) {
 		const GA_ROHandleI av(primClsAttrRef);
 		if (av.isValid()) {
 			const int32 v = av.get(p->getMapOffset());
-			if (DBG)
+			if constexpr (DBG)
 				LOG_DBG << "        got int classifier value: " << v;
 			mPrimitives[v].push_back(p);
 		}
 		else {
-			if (DBG)
+			if constexpr (DBG)
 				LOG_DBG << "        int: invalid handle!";
 		}
 	}
@@ -77,7 +77,7 @@ void PrimitivePartition::add(const GA_Detail* detail, const PrimitiveClassifier&
 		if (av.isValid()) {
 			const char* v = av.get(p->getMapOffset());
 			if (v) {
-				if (DBG)
+				if constexpr (DBG)
 					LOG_DBG << "        got string classifier value: " << v;
 				mPrimitives[UT_String(v)].push_back(p);
 			}
@@ -87,12 +87,12 @@ void PrimitivePartition::add(const GA_Detail* detail, const PrimitiveClassifier&
 			}
 		}
 		else {
-			if (DBG)
+			if constexpr (DBG)
 				LOG_DBG << "        string: invalid handle!";
 		}
 	}
 	else {
-		if (DBG)
+		if constexpr (DBG)
 			LOG_DBG << "        wrong type!";
 	}
 }

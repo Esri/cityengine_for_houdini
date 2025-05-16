@@ -1,0 +1,19 @@
+# escape=`
+
+ARG BASE_IMAGE="palladio-tc-base"
+FROM ${BASE_IMAGE}
+SHELL ["cmd", "/S", "/C"]
+
+ARG HOUDINI_VERSION=20.5.522
+COPY . C:/tmp/Houdini${HOUDINI_VERSION}
+
+ENV CONAN_USER_HOME=C:\opt\conan
+RUN conan create -pr C:/tmp/conan-recipes/profiles/windows-v143 -e HOUDINI_INSTALL=C:/tmp/Houdini%HOUDINI_VERSION% `
+    C:/tmp/conan-recipes/houdini houdini/%HOUDINI_VERSION%@sidefx/stable
+
+RUN del /Q C:\tmp\Houdini%HOUDINI_VERSION% `
+    && del /Q C:\tmp\conan-recipes
+
+RUN mkdir C:\tmp\work
+WORKDIR C:/tmp/work   
+ENTRYPOINT [ "C:\\BuildTools\\VC\\Auxiliary\\Build\\vcvarsall.bat", "x64", "-vcvars_ver=14.37", "&&" ]

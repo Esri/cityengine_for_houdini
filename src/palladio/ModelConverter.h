@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ class ModelConverter : public HoudiniCallbacks {
 public:
 	explicit ModelConverter(GU_Detail* gdp, GroupCreation gc, std::vector<prt::Status>& statuses,
 	                        UT_AutoInterrupt* autoInterrupt = nullptr);
-	~ModelConverter() = default;
+	~ModelConverter() override = default;
 
 	void buildHoles();
 

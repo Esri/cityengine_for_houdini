@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ constexpr const wchar_t* EO_TRIANGULATE_FACES_WITH_HOLES = L"triangulateFacesWit
 
 class HoudiniCallbacks : public prt::Callbacks {
 public:
-	virtual ~HoudiniCallbacks() override = default;
+	~HoudiniCallbacks() override = default;
 
 	/**
 	 * @param name initial shape (primitive group) name, optionally used to create primitive groups on output

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ const std::wstring WLEVELS[] = {L"trace", L"debug", L"info", L"warning", L"error
 // log to std streams
 template <prt::LogLevel L>
 struct StreamLogger : Logger {
-	StreamLogger(std::wostream& out = std::wcout) : Logger(), mOut(out) {
+	explicit StreamLogger(std::wostream& out = std::wcout) : Logger(), mOut(out) {
 		mOut << prefix();
 	}
 	virtual ~StreamLogger() {
@@ -112,19 +112,19 @@ struct PRTLogger : Logger {
 
 class LogHandler : public prt::LogHandler {
 public:
-	LogHandler(const std::wstring& name) : mName(name) {}
+	explicit LogHandler(const std::wstring& name) : mName(name) {}
 
-	virtual void handleLogEvent(const wchar_t* msg, prt::LogLevel level) override {
+	void handleLogEvent(const wchar_t* msg, prt::LogLevel level) override {
 		// probably not the best idea - is there a houdini logging framework?
 		std::wcout << L"[" << mName << L"] " << msg << std::endl;
 	}
 
-	virtual const prt::LogLevel* getLevels(size_t* count) override {
+	const prt::LogLevel* getLevels(size_t* count) override {
 		*count = prt::LogHandler::ALL_COUNT;
 		return prt::LogHandler::ALL;
 	}
 
-	virtual void getFormat(bool* dateTime, bool* level) override {
+	void getFormat(bool* dateTime, bool* level) override {
 		*dateTime = true;
 		*level = true;
 	}
@@ -145,15 +145,15 @@ using LT = PRTLogger<L>;
 
 } // namespace logging
 
-using _LOG_DBG = logging::LT<prt::LOG_DEBUG>;
-using _LOG_INF = logging::LT<prt::LOG_INFO>;
-using _LOG_WRN = logging::LT<prt::LOG_WARNING>;
-using _LOG_ERR = logging::LT<prt::LOG_ERROR>;
-using _LOG_FTL = logging::LT<prt::LOG_FATAL>;
+using LOG_DBG_t = logging::LT<prt::LOG_DEBUG>;
+using LOG_INF_t = logging::LT<prt::LOG_INFO>;
+using LOG_WRN_t = logging::LT<prt::LOG_WARNING>;
+using LOG_ERR_t = logging::LT<prt::LOG_ERROR>;
+using LOG_FTL_t = logging::LT<prt::LOG_FATAL>;
 
 // convenience shortcuts in global namespace
-#define LOG_DBG _LOG_DBG() << __FUNCTION__ << ": "
-#define LOG_INF _LOG_INF()
-#define LOG_WRN _LOG_WRN()
-#define LOG_ERR _LOG_ERR()
-#define LOG_FTL _LOG_FTL()
+#define LOG_DBG LOG_DBG_t() << __FUNCTION__ << ": "
+#define LOG_INF LOG_INF_t()
+#define LOG_WRN LOG_WRN_t()
+#define LOG_ERR LOG_ERR_t()
+#define LOG_FTL LOG_FTL_t()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,12 +87,12 @@ private:
 
 class HoudiniEncoderFactory : public prtx::EncoderFactory, public prtx::Singleton<HoudiniEncoderFactory> {
 public:
-	static HoudiniEncoderFactory* createInstance();
+	[[nodiscard]] static HoudiniEncoderFactory* createInstance();
 
 	explicit HoudiniEncoderFactory(const prt::EncoderInfo* info) : prtx::EncoderFactory(info) {}
 	~HoudiniEncoderFactory() override = default;
 
-	HoudiniEncoder* create(const prt::AttributeMap* options, prt::Callbacks* callbacks) const override {
+	[[nodiscard]] HoudiniEncoder* create(const prt::AttributeMap* options, prt::Callbacks* callbacks) const override {
 		return new HoudiniEncoder(getID(), options, callbacks);
 	}
 };

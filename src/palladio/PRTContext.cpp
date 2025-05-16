@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 Esri R&D Zurich and VRBN
+ * Copyright 2014-2025 Esri R&D Zurich and VRBN
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@
 namespace {
 
 constexpr const wchar_t* PLD_LOG_PREFIX = L"pld";
-constexpr const char* PLD_TMP_PREFIX = "palladio_";
+constexpr const char* PLD_TMP_PREFIX = "cityengine_for_houdini_";
 
 constexpr const char* PRT_LIB_SUBDIR = "prtlib";
 
@@ -194,7 +194,7 @@ PRTContext::~PRTContext() {
 	LOG_INF << "Released PRT cache";
 
 	mPRTHandle.reset(); // same here
-	LOG_INF << "Shutdown PRT & returned license";
+	LOG_INF << "Shutdown PRT";
 
 	prt::removeLogHandler(mLogHandler.get());
 }
