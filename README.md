@@ -374,9 +374,9 @@ See [Quick Start](#quick-start) how to launch Houdini with CityEngine for Houdin
 
 #### Changed:
 
-- Rebranded from "Palladio" to "ArcGIS CityEngine for Houdini". We will continue to use the compact name Palladio" in the source code.
-- Fixed support for Rule Packages inside HDAs (if HDA name contains non-filesystem compatible characters).
-- Always use double precision to transport geometry and attribute values from/to Houdini.
+- Rebranded from "Palladio" to "ArcGIS CityEngine for Houdini". We will continue to use the compact name "Palladio" in the source code.
+- Fixed support for Rule Packages inside HDAs if the HDA name contains non-filesystem compatible characters.
+- Always use double precision to transport geometry and floating point attribute values from/to Houdini.
 - Updated Procedural Runtime (PRT) to 3.2.10650 (corresponds to CityEngine 2024.1).
 - Minor code cleanups and CI improvements.
 
