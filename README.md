@@ -362,6 +362,8 @@ See [Quick Start](#quick-start) how to launch Houdini with CityEngine for Houdin
 
 ## Release Notes
 
+### v2.3.0 (XXX Y, 2025)
+
 ### v2.2.0 (May 2, 2025)
 
 - Compatible CityEngine versions: 2024.1 or older
