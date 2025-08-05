@@ -10,7 +10,7 @@ DOCKERFILES_WINDOWS = ROOT_DIR / 'docker' / 'windows'
 IMG_REV = 'v0'
 IMG_NAME_BASE = 'palladio-tc-base'
 IMG_NAME = 'palladio-tc'
-TAG_PREFIX = 'win19-vc1437'
+TAG_PREFIX = 'win19-vc1438'
 
 
 def main():

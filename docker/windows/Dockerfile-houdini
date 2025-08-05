@@ -16,4 +16,4 @@ RUN del /Q C:\tmp\Houdini%HOUDINI_VERSION% `
 
 RUN mkdir C:\tmp\work
 WORKDIR C:/tmp/work   
-ENTRYPOINT [ "C:\\BuildTools\\VC\\Auxiliary\\Build\\vcvarsall.bat", "x64", "-vcvars_ver=14.37", "&&" ]
+ENTRYPOINT [ "C:\\BuildTools\\VC\\Auxiliary\\Build\\vcvarsall.bat", "x64", "-vcvars_ver=14.38", "&&" ]

@@ -269,7 +269,7 @@ It can be useful to put RPKs into an `rpk` sub-directory of your current Houdini
 - [cmake 3.13 or later](https://cmake.org/download)
 - [conan 1.66.0](https://www.conan.io/downloads)
 - Linux: GCC 11.2 or later
-- Windows: Visual Studio 2022 (MSVC 14.37) or later
+- Windows: Visual Studio 2022 (MSVC 14.38) or later
 
 ### Required Build Dependencies (Latest Release)
 
@@ -325,7 +325,7 @@ Note: to build for another Houdini version, add the cmake argument `-DPLD_HOUDIN
 
 ##### Windows
 
-1. Open a MSVC 14.37 x64 shell (Visual Studio 2022) and `cd` to the CityEngine for Houdini git repository
+1. Open a MSVC 14.38 x64 shell (Visual Studio 2022) and `cd` to the CityEngine for Houdini git repository
 1. `mkdir build/release`
 1. `cd build/release`
 1. `cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ../../src`
@@ -353,7 +353,7 @@ See [Quick Start](#quick-start) how to launch Houdini with CityEngine for Houdin
 
 #### Windows
 
-1. Open a MSVC 14.37 x64 shell (Visual Studio 2022) and `cd` to the CityEngine for Houdini git repository
+1. Open a MSVC 14.38 x64 shell (Visual Studio 2022) and `cd` to the CityEngine for Houdini git repository
 1. `mkdir build/relTest`
 1. `cd build/relTest`
 1. `cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DPLD_TEST=1 ../../src`
