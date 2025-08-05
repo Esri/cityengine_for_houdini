@@ -291,14 +291,14 @@ The below steps will populate your local Conan repository with dependencies for 
 ##### Linux
 
 1. Checkout CityEngine for Houdini: `git clone git@github.com:esri/cityengine_for_houdini.git && cd palladio`
-1. Download CityEngine SDK: `conan create -pr conan/profiles/linux-gcc112 conan/cesdk cesdk/3.2.10650@esri-rd-zurich/stable`
+1. Download CityEngine SDK: `conan create -pr conan/profiles/linux-gcc112 conan/cesdk cesdk/3.3.11173@esri-rd-zurich/stable`
 1. Extract and package the HDK from your local Houdini 20.5 installation (adjust Z to your Houdini version): `conan create -pr conan/profiles/linux-gcc112 conan/houdini houdini/20.5.Z@sidefx/stable` (Note: use the option `-e HOUDINI_INSTALL=/path/to/your/hfs20.5.Z`, if Houdini is not installed at the standard location, e.g. at `/opt/hfs20.5.Z` for Linux).
 
 ##### Windows
 
 1. Checkout CityEngine for Houdini: `git clone git@github.com:esri/cityengine_for_houdini.git`
 1. Open a Windows command shell and `cd` to the CityEngine for Houdini git repository
-1. Download CityEngine SDK: `conan create -pr conan/profiles/windows-v143 conan/cesdk cesdk/3.2.10650@esri-rd-zurich/stable`
+1. Download CityEngine SDK: `conan create -pr conan/profiles/windows-v143 conan/cesdk cesdk/3.3.11173@esri-rd-zurich/stable`
 1. Extract and package the HDK from your local Houdini installation (adjust Z to your Houdini version): `conan create -pr conan/profiles/windows-v143 conan/houdini houdini/20.5.Z@sidefx/stable` (Note: use the option `-e HOUDINI_INSTALL=C:/path/to/your/houdini/installation`, if Houdini is not installed at the standard location for Windows).
 
 ##### Docker Toolchain Images

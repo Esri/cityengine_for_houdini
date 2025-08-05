@@ -6,7 +6,7 @@ class PalladioConanBase(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake"
 
-    cesdk_default_version = "3.2.10650"
+    cesdk_default_version = "3.3.11173"
     houdini_version = "" # see subclasses
     catch2_version = "2.13.7"
 

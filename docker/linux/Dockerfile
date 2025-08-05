@@ -52,7 +52,7 @@ RUN python3.12 -m pip install --user --no-cache-dir --upgrade pip wheel "conan<2
 # Pre-installing the Conan cache
 ARG CONAN_RECIPES=/tmp/conan-recipes
 
-ARG CESDK_VERSION=3.2.10650
+ARG CESDK_VERSION=3.3.11173
 RUN --mount=type=bind,source=./conan,target=${CONAN_RECIPES},ro \
     conan create -pr ${CONAN_RECIPES}/profiles/linux-gcc112 ${CONAN_RECIPES}/cesdk \
     cesdk/${CESDK_VERSION}@esri-rd-zurich/stable
