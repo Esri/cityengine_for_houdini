@@ -269,7 +269,7 @@ It can be useful to put RPKs into an `rpk` sub-directory of your current Houdini
 - [cmake 3.13 or later](https://cmake.org/download)
 - [conan 1.66.0](https://www.conan.io/downloads)
 - Linux: GCC 11.2 or later
-- Windows: Visual Studio 2022 (MSVC 14.37) or later
+- Windows: Visual Studio 2022 (MSVC 14.38) or later
 
 ### Required Build Dependencies (Latest Release)
 
@@ -291,14 +291,14 @@ The below steps will populate your local Conan repository with dependencies for 
 ##### Linux
 
 1. Checkout CityEngine for Houdini: `git clone git@github.com:esri/cityengine_for_houdini.git && cd palladio`
-1. Download CityEngine SDK: `conan create -pr conan/profiles/linux-gcc112 conan/cesdk cesdk/3.2.10650@esri-rd-zurich/stable`
+1. Download CityEngine SDK: `conan create -pr conan/profiles/linux-gcc112 conan/cesdk cesdk/3.3.11173@esri-rd-zurich/stable`
 1. Extract and package the HDK from your local Houdini 20.5 installation (adjust Z to your Houdini version): `conan create -pr conan/profiles/linux-gcc112 conan/houdini houdini/20.5.Z@sidefx/stable` (Note: use the option `-e HOUDINI_INSTALL=/path/to/your/hfs20.5.Z`, if Houdini is not installed at the standard location, e.g. at `/opt/hfs20.5.Z` for Linux).
 
 ##### Windows
 
 1. Checkout CityEngine for Houdini: `git clone git@github.com:esri/cityengine_for_houdini.git`
 1. Open a Windows command shell and `cd` to the CityEngine for Houdini git repository
-1. Download CityEngine SDK: `conan create -pr conan/profiles/windows-v143 conan/cesdk cesdk/3.2.10650@esri-rd-zurich/stable`
+1. Download CityEngine SDK: `conan create -pr conan/profiles/windows-v143 conan/cesdk cesdk/3.3.11173@esri-rd-zurich/stable`
 1. Extract and package the HDK from your local Houdini installation (adjust Z to your Houdini version): `conan create -pr conan/profiles/windows-v143 conan/houdini houdini/20.5.Z@sidefx/stable` (Note: use the option `-e HOUDINI_INSTALL=C:/path/to/your/houdini/installation`, if Houdini is not installed at the standard location for Windows).
 
 ##### Docker Toolchain Images
@@ -325,7 +325,7 @@ Note: to build for another Houdini version, add the cmake argument `-DPLD_HOUDIN
 
 ##### Windows
 
-1. Open a MSVC 14.37 x64 shell (Visual Studio 2022) and `cd` to the CityEngine for Houdini git repository
+1. Open a MSVC 14.38 x64 shell (Visual Studio 2022) and `cd` to the CityEngine for Houdini git repository
 1. `mkdir build/release`
 1. `cd build/release`
 1. `cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ../../src`
@@ -353,7 +353,7 @@ See [Quick Start](#quick-start) how to launch Houdini with CityEngine for Houdin
 
 #### Windows
 
-1. Open a MSVC 14.37 x64 shell (Visual Studio 2022) and `cd` to the CityEngine for Houdini git repository
+1. Open a MSVC 14.38 x64 shell (Visual Studio 2022) and `cd` to the CityEngine for Houdini git repository
 1. `mkdir build/relTest`
 1. `cd build/relTest`
 1. `cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DPLD_TEST=1 ../../src`
