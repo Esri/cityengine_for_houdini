@@ -16,6 +16,7 @@
 
 #include "HoleConverter.h"
 
+#include <algorithm>
 #include <set>
 
 namespace HoleConverter {
