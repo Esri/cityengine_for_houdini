@@ -57,7 +57,7 @@ RUN --mount=type=bind,source=./conan,target=${CONAN_RECIPES},ro \
     conan create -pr ${CONAN_RECIPES}/profiles/linux-gcc112 ${CONAN_RECIPES}/cesdk \
     cesdk/${CESDK_VERSION}@esri-rd-zurich/stable
 
-ARG HOUDINI_VERSION=20.5.522
+ARG HOUDINI_VERSION=21.0.559
 RUN --mount=type=bind,source=./conan,target=${CONAN_RECIPES},ro \
     --mount=type=bind,from=houdini,source=.,target=/tmp/Houdini${HOUDINI_VERSION},ro \
     conan create -pr ${CONAN_RECIPES}/profiles/linux-gcc112 -e HOUDINI_INSTALL=/tmp/Houdini${HOUDINI_VERSION} \

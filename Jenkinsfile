@@ -29,7 +29,7 @@ import com.esri.zrh.jenkins.psl.UploadTrackingPsl
 @Field final String DOCKER_IMAGE_TAG_BASE_LINUX = 'almalinux8-gcc11'
 @Field final String DOCKER_IMAGE_TAG_BASE_WINDOWS = 'win19-vc1438'
 
-@Field final String[] HDK_VER = [ '20.5.522', '20.0.896', '19.5.805' ]
+@Field final String[] HDK_VER = [ '21.0.559', '20.5.684', '20.0.896' ]
 
 @Field final List CONFIGS_CHECKOUT = [ [ ba: PSL.BA_CHECKOUT ] ]
 @Field final Map DOCKER_IMAGE_LINUX_CONFIG = [ ba: PSL.BA_LINUX_DOCKER, containerWorkspace: "/tmp/work" ]
