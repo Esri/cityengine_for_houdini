@@ -291,14 +291,14 @@ The below steps will populate your local Conan repository with dependencies for 
 ##### Linux
 
 1. Checkout CityEngine for Houdini: `git clone git@github.com:esri/cityengine_for_houdini.git && cd palladio`
-1. Download CityEngine SDK: `conan create -pr conan/profiles/linux-gcc112 conan/cesdk cesdk/3.3.11173@esri-rd-zurich/stable`
+1. Download CityEngine SDK: `conan create -pr conan/profiles/linux-gcc112 conan/cesdk cesdk/3.3.11669@esri-rd-zurich/stable`
 1. Extract and package the HDK from your local Houdini 21.0 installation (adjust Z to your Houdini version): `conan create -pr conan/profiles/linux-gcc112 conan/houdini houdini/21.0.Z@sidefx/stable` (Note: use the option `-e HOUDINI_INSTALL=/path/to/your/hfs21.0.Z`, if Houdini is not installed at the standard location, e.g. at `/opt/hfs21.0.Z` for Linux).
 
 ##### Windows
 
 1. Checkout CityEngine for Houdini: `git clone git@github.com:esri/cityengine_for_houdini.git`
 1. Open a Windows command shell and `cd` to the CityEngine for Houdini git repository
-1. Download CityEngine SDK: `conan create -pr conan/profiles/windows-v143 conan/cesdk cesdk/3.3.11173@esri-rd-zurich/stable`
+1. Download CityEngine SDK: `conan create -pr conan/profiles/windows-v143 conan/cesdk cesdk/3.3.11669@esri-rd-zurich/stable`
 1. Extract and package the HDK from your local Houdini installation (adjust Z to your Houdini version): `conan create -pr conan/profiles/windows-v143 conan/houdini houdini/21.0.Z@sidefx/stable` (Note: use the option `-e HOUDINI_INSTALL=C:/path/to/your/houdini/installation`, if Houdini is not installed at the standard location for Windows).
 
 ##### Docker Toolchain Images
@@ -376,6 +376,7 @@ See [Quick Start](#quick-start) how to launch Houdini with CityEngine for Houdin
 - Fixed crash triggered by empty CGA array attributes.
 - Fixed compilation issues with GCC 14.2.
 - Updated minimum MSVC version required to 14.38.
+- Updated Procedural Runtime (PRT) to 3.3.11669 (corresponds to CityEngine 2025.1).
 
 #### Removed:
 
