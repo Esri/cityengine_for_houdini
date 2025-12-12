@@ -24,7 +24,7 @@ import com.esri.zrh.jenkins.psl.UploadTrackingPsl
 @Field final String BUILD_TARGET = 'package'
 @Field final String SOURCE_STASH = 'palladio-src'
 
-@Field final String DOCKER_IMAGE_REV = 'v1'
+@Field final String DOCKER_IMAGE_REV = 'v2'
 @Field final String DOCKER_IMAGE_ID = 'palladio/palladio-tc'
 @Field final String DOCKER_IMAGE_TAG_BASE_LINUX = 'almalinux8-gcc11'
 @Field final String DOCKER_IMAGE_TAG_BASE_WINDOWS = 'win19-vc1438'
