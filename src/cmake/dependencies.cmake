@@ -99,7 +99,7 @@ get_target_property(PLD_HDN_TGT_LIBS_FS Houdini INTERFACE_LINK_LIBRARIES)
 set(PLD_HDN_TGT_LIBS ${PLD_HDN_TGT_LIBS_FS})
 list(REMOVE_ITEM PLD_HDN_TGT_LIBS_FS Houdini::HoudiniAPPS3 Houdini::HoudiniAPPS2
 		Houdini::HoudiniUI Houdini::HoudiniHARD Houdini::HoudiniHAPIL
-		Houdini::HoudiniAPPS1 Houdini::HoudiniDEVICE)
+		Houdini::HoudiniAPPS1 Houdini::HoudiniDEVICE Houdini::hboost_system)
 
 function(pld_select_houdini_dependency_list TGT)
 	if("${TGT}" STREQUAL "${TGT_FS}")
