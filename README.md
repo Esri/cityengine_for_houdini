@@ -362,7 +362,24 @@ See [Quick Start](#quick-start) how to launch Houdini with CityEngine for Houdin
 
 ## Release Notes
 
-### v2.3.0 (XXX Y, 2025)
+### v2.3.0 (Dec 17, 2025)
+
+- Compatible CityEngine versions: 2025.1 or older
+- For commercial work, a [license](https://www.esri.com/cityengine) for CityEngine 2022.0 or later is required.
+
+#### Added:
+ 
+- Added support for Houdini 21.0.
+
+#### Changed:
+
+- Fixed crash triggered by empty CGA array attributes.
+- Fixed compilation issues with GCC 14.2.
+- Updated minimum MSVC version required to 14.38.
+
+#### Removed:
+
+- Removed support for Houdini 19.5.
 
 ### v2.2.0 (May 2, 2025)
 
