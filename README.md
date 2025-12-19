@@ -48,7 +48,7 @@ Please refer to the [release notes](#release-notes) for the supported CityEngine
 
 - Windows 10 or 11 (64bit)
 - RedHat Enterprise Linux 8 or 9 and compatible (CentOS, Alma Linux, Rocky Linux, ...)
-- Houdini 19.5, 20.0, 20.5
+- Houdini 20.0, 20.5, 21.0
 - See [release notes](#release-notes) for compatible CityEngine versions and requirements for commercial work. 
 
 #### From Pre-Built Binaries
@@ -269,11 +269,11 @@ It can be useful to put RPKs into an `rpk` sub-directory of your current Houdini
 - [cmake 3.13 or later](https://cmake.org/download)
 - [conan 1.66.0](https://www.conan.io/downloads)
 - Linux: GCC 11.2 or later
-- Windows: Visual Studio 2022 (MSVC 14.37) or later
+- Windows: Visual Studio 2022 (MSVC 14.38) or later
 
 ### Required Build Dependencies (Latest Release)
 
-- Installation of Houdini 19.5, 20.0 or 20.5 (see https://sidefx.com/download)
+- Installation of Houdini 20.0, 20.5 or 21.0 (see https://sidefx.com/download)
 
 The following will be automatically fetched via the bootstrap steps below:
 
@@ -282,7 +282,7 @@ The following will be automatically fetched via the bootstrap steps below:
 
 ### Build Instructions
 
-Default is Houdini 20.5. See below how to build for different Houdini versions.
+Default is Houdini 21.0. See below how to build for different Houdini versions.
 
 #### Bootstrap
 
@@ -291,15 +291,15 @@ The below steps will populate your local Conan repository with dependencies for 
 ##### Linux
 
 1. Checkout CityEngine for Houdini: `git clone git@github.com:esri/cityengine_for_houdini.git && cd palladio`
-1. Download CityEngine SDK: `conan create -pr conan/profiles/linux-gcc112 conan/cesdk cesdk/3.2.10650@esri-rd-zurich/stable`
-1. Extract and package the HDK from your local Houdini 20.5 installation (adjust Z to your Houdini version): `conan create -pr conan/profiles/linux-gcc112 conan/houdini houdini/20.5.Z@sidefx/stable` (Note: use the option `-e HOUDINI_INSTALL=/path/to/your/hfs20.5.Z`, if Houdini is not installed at the standard location, e.g. at `/opt/hfs20.5.Z` for Linux).
+1. Download CityEngine SDK: `conan create -pr conan/profiles/linux-gcc112 conan/cesdk cesdk/3.3.11669@esri-rd-zurich/stable`
+1. Extract and package the HDK from your local Houdini 21.0 installation (adjust Z to your Houdini version): `conan create -pr conan/profiles/linux-gcc112 conan/houdini houdini/21.0.Z@sidefx/stable` (Note: use the option `-e HOUDINI_INSTALL=/path/to/your/hfs21.0.Z`, if Houdini is not installed at the standard location, e.g. at `/opt/hfs21.0.Z` for Linux).
 
 ##### Windows
 
 1. Checkout CityEngine for Houdini: `git clone git@github.com:esri/cityengine_for_houdini.git`
 1. Open a Windows command shell and `cd` to the CityEngine for Houdini git repository
-1. Download CityEngine SDK: `conan create -pr conan/profiles/windows-v143 conan/cesdk cesdk/3.2.10650@esri-rd-zurich/stable`
-1. Extract and package the HDK from your local Houdini installation (adjust Z to your Houdini version): `conan create -pr conan/profiles/windows-v143 conan/houdini houdini/20.5.Z@sidefx/stable` (Note: use the option `-e HOUDINI_INSTALL=C:/path/to/your/houdini/installation`, if Houdini is not installed at the standard location for Windows).
+1. Download CityEngine SDK: `conan create -pr conan/profiles/windows-v143 conan/cesdk cesdk/3.3.11669@esri-rd-zurich/stable`
+1. Extract and package the HDK from your local Houdini installation (adjust Z to your Houdini version): `conan create -pr conan/profiles/windows-v143 conan/houdini houdini/21.0.Z@sidefx/stable` (Note: use the option `-e HOUDINI_INSTALL=C:/path/to/your/houdini/installation`, if Houdini is not installed at the standard location for Windows).
 
 ##### Docker Toolchain Images
 
@@ -321,15 +321,15 @@ Note: to build for another Houdini version, add the cmake argument `-DPLD_HOUDIN
 1. `cd` into your CityEngine for Houdini git repository
 1. `mkdir -p build/release && cd build/release`
 1. `cmake -DCMAKE_BUILD_TYPE=Release ../../src`
-1. `make install` (the plugin will be installed into your `~/houdini20.5/dso` directory)
+1. `make install` (the plugin will be installed into your `~/houdini21.0/dso` directory)
 
 ##### Windows
 
-1. Open a MSVC 14.37 x64 shell (Visual Studio 2022) and `cd` to the CityEngine for Houdini git repository
+1. Open a MSVC 14.38 x64 shell (Visual Studio 2022) and `cd` to the CityEngine for Houdini git repository
 1. `mkdir build/release`
 1. `cd build/release`
 1. `cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ../../src`
-1. `nmake install` (the plugin will be installed into your `%USERPROFILE%/Documents/houdini20.5/dso` directory)
+1. `nmake install` (the plugin will be installed into your `%USERPROFILE%/Documents/houdini21.0/dso` directory)
 
 #### Debugging CityEngine for Houdini
 
@@ -353,7 +353,7 @@ See [Quick Start](#quick-start) how to launch Houdini with CityEngine for Houdin
 
 #### Windows
 
-1. Open a MSVC 14.37 x64 shell (Visual Studio 2022) and `cd` to the CityEngine for Houdini git repository
+1. Open a MSVC 14.38 x64 shell (Visual Studio 2022) and `cd` to the CityEngine for Houdini git repository
 1. `mkdir build/relTest`
 1. `cd build/relTest`
 1. `cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DPLD_TEST=1 ../../src`
@@ -361,6 +361,26 @@ See [Quick Start](#quick-start) how to launch Houdini with CityEngine for Houdin
 1. Run `bin\palladio_test`
 
 ## Release Notes
+
+### v2.3.0 (Dec 17, 2025)
+
+- Compatible CityEngine versions: 2025.1 or older
+- For commercial work, a [license](https://www.esri.com/cityengine) for CityEngine 2022.0 or later is required.
+
+#### Added:
+ 
+- Added support for Houdini 21.0.
+
+#### Changed:
+
+- Fixed crash triggered by empty CGA array attributes.
+- Fixed compilation issues with GCC 14.2.
+- Updated minimum MSVC version required to 14.38.
+- Updated Procedural Runtime (PRT) to 3.3.11669 (corresponds to CityEngine 2025.1).
+
+#### Removed:
+
+- Removed support for Houdini 19.5.
 
 ### v2.2.0 (May 2, 2025)
 

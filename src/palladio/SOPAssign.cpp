@@ -140,8 +140,9 @@ CGAAttributeTypeMap getCGAAttributeTypes(SOPAssign* node) {
 			}
 			case PRM_Type::PRM_BasicType::PRM_BASIC_FLOAT: {
 				if (parmPtr->getMultiType() == PRM_MultiType::PRM_MULTITYPE_LIST) {
+					if (parmPtr->getMultiParmCount() == 0)
+						continue;
 					const PRM_Template* templatePtr = parmPtr->getMultiParmTemplate(0);
-
 					if (templatePtr == nullptr)
 						continue;
 

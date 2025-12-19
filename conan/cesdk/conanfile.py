@@ -12,7 +12,9 @@ class CESDKConan(ConanFile):
 
     def build(self):
         if self.settings.os == "Windows":
-            if self.version >= Version("3.2.9903"):
+            if self.version >= Version("3.2.10824"):
+                toolchain = "vc1438"
+            elif self.version >= Version("3.2.9903"):
                 toolchain = "vc1437"
             elif self.version >= Version("2.4.7316"):
                 toolchain = "vc1427"

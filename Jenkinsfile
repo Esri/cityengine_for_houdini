@@ -24,18 +24,18 @@ import com.esri.zrh.jenkins.psl.UploadTrackingPsl
 @Field final String BUILD_TARGET = 'package'
 @Field final String SOURCE_STASH = 'palladio-src'
 
-@Field final String DOCKER_IMAGE_REV = 'v0'
+@Field final String DOCKER_IMAGE_REV = 'v2'
 @Field final String DOCKER_IMAGE_ID = 'palladio/palladio-tc'
 @Field final String DOCKER_IMAGE_TAG_BASE_LINUX = 'almalinux8-gcc11'
-@Field final String DOCKER_IMAGE_TAG_BASE_WINDOWS = 'win19-vc1437'
+@Field final String DOCKER_IMAGE_TAG_BASE_WINDOWS = 'win19-vc1438'
 
-@Field final String[] HDK_VER = [ '20.5.522', '20.0.896', '19.5.805' ]
+@Field final String[] HDK_VER = [ '21.0.559', '20.5.684', '20.0.896' ]
 
 @Field final List CONFIGS_CHECKOUT = [ [ ba: PSL.BA_CHECKOUT ] ]
 @Field final Map DOCKER_IMAGE_LINUX_CONFIG = [ ba: PSL.BA_LINUX_DOCKER, containerWorkspace: "/tmp/work" ]
 @Field final Map DOCKER_IMAGE_WINDOWS_CONFIG = [ ba: 'win19-64-d', containerWorkspace: 'c:/tmp/work' ]
 @Field final Map BUILD_ENV_LINUX_CONFIG = [ os: CEPL.CFG_OS_RHEL8, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_GCC112, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64 ]
-@Field final Map BUILD_ENV_WINDOWS_CONFIG = [ os: CEPL.CFG_OS_WIN10, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_VC1437, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64 ]
+@Field final Map BUILD_ENV_WINDOWS_CONFIG = [ os: CEPL.CFG_OS_WIN10, bc: CEPL.CFG_BC_REL, tc: CEPL.CFG_TC_VC1438, cc: CEPL.CFG_CC_OPT, arch: CEPL.CFG_ARCH_X86_64 ]
 @Field final Map BUILD_ENV_LINUX_CONFIG_CESDK_LATEST = BUILD_ENV_LINUX_CONFIG
 @Field final Map BUILD_ENV_WINDOWS_CONFIG_CESDK_LATEST = BUILD_ENV_WINDOWS_CONFIG + [ tc: CEPL.CFG_TC_VC1438 ]
 @Field final Map BUILD_ENV_CESDK_LATEST = [ grp: 'cesdkLatest', cesdk: PAPL.Dependencies.CESDK_LATEST ]

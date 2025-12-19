@@ -21,7 +21,7 @@ set(HOUDINI_RELATIVE_PALLADIO_PATH "${HOUDINI_RELATIVE_PACKAGES_PATH}/palladio")
 ### versioning
 
 set(PLD_VERSION_MAJOR 2)
-set(PLD_VERSION_MINOR 2)
+set(PLD_VERSION_MINOR 3)
 set(PLD_VERSION_PATCH 0)
 set(PLD_VERSION_PRE "") # set to empty string for final releases
 if (NOT PLD_VERSION_BUILD)

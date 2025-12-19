@@ -5,12 +5,12 @@ import docker
 
 DOCKER_CLIENT = docker.from_env()
 ROOT_DIR = Path(__file__).parents[2]
-HOUDINI_VERSIONS = [ '20.5.522', '20.0.896', '19.5.805' ]
+HOUDINI_VERSIONS = [ '21.0.559','20.5.684', '20.0.896' ]
 DOCKERFILES_WINDOWS = ROOT_DIR / 'docker' / 'windows'
-IMG_REV = 'v0'
+IMG_REV = 'v2'
 IMG_NAME_BASE = 'palladio-tc-base'
 IMG_NAME = 'palladio-tc'
-TAG_PREFIX = 'win19-vc1437'
+TAG_PREFIX = 'win19-vc1438'
 
 
 def main():

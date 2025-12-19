@@ -2,20 +2,16 @@
 
 ARG BASE_IMAGE="python:3.12-windowsservercore-1809"
 FROM ${BASE_IMAGE}
-SHELL ["cmd", "/S", "/C"]
 
-ADD https://aka.ms/vs/17/release/vs_buildtools.exe C:/tmp/vs_buildtools.exe
-RUN C:/tmp/vs_buildtools.exe --quiet --wait --norestart --nocache ^ `
-    --installPath C:\BuildTools ^ `
-    --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended ^ `
-    --add Microsoft.VisualStudio.Component.VC.14.37.17.7.x86.x64 ^ `
-    --add Microsoft.VisualStudio.Component.VC.14.38.17.8.x86.x64 ^ `
-    || IF "%ERRORLEVEL%"=="3010" EXIT 0
+COPY docker/windows/install_vs_toolchain.ps1 C:/tmp/
+SHELL ["powershell", "-Command"]
+RUN C:/tmp/install_vs_toolchain.ps1; Remove-Item 'C:/tmp/install_vs_toolchain.ps1'
 
 COPY ./conan C:/tmp/conan-recipes
 
-ARG CESDK_VERSION=3.2.10650
+ARG CESDK_VERSION=3.3.11669
 ENV CONAN_USER_HOME=C:\opt\conan
+SHELL ["cmd", "/S", "/C"]
 RUN mkdir C:\opt\conan `
     && python -m pip install --no-cache-dir --upgrade pip wheel "conan<2.0" `
     && conan download catch2/2.13.7@ `
